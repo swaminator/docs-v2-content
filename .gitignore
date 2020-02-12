@@ -3,4 +3,3 @@ node_modules
 public
 .cache
 yarn.lock
-package-lock.json
