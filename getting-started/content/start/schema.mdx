@@ -1,0 +1,124 @@
+---
+title: '1. Define a data model'
+description: Define your data model and create a GraphQL API to interface with your data 
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+To build the photo album app the first thing we need to do is model our backend data. The GraphQL Transform library provides a simple to use abstraction that helps you quickly create a GraphQL API backed with a NoSQL database (Amazon DynamoDB) in the AWS cloud. In the steps below, we'll set up a GraphQL server that will enforce our schema's structure, and then we'll define the schema itself.
+
+
+## Set up GraphQL data model
+
+For this app, we have the following requirements:
+
+1. A photo album screen that shows a list of photos
+2. Ability to view details on a particular photo
+
+A photo album has a `Photo` and `Album` field. An `Album` can contain many `Photos`
+
+A schema is only useful if our data graph conforms to the schema's structure. Enforcing a schema's structure is one of the core features of **GraphQL Transform**. With the GraphQL Transform, you define your application’s data model using the GraphQL Schema Definition Language (SDL) and the library handles converting your SDL definition into a set of fully descriptive AWS CloudFormation templates that implement your data model.
+
+
+From the photoalbums directory, run amplify add api and respond to the prompts like this:
+
+```bash
+$ amplify add api 
+
+? Please select from one of the below mentioned services
+GraphQL
+
+? Provide API name:
+photoalbums
+
+? Choose an authorization type for the API
+API_KEY
+
+? Do you have an annotated GraphQL schema? 
+No
+
+? Do you want a guided schema creation? 
+Yes
+
+? What best describes your project: 
+One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)
+
+? Do you want to edit the schema now? 
+Yes
+
+Please manually edit the file created at /home/ec2-user/environment/photoalbums/amplify/backend/api/photoalbums/schema.graphql
+
+? Press enter to continue
+```
+
+This will open your default editor with an example schema. Replace the default schema with what is provided below:
+
+```js:title=amplify/backend/api/photoalbums/schema.graphql
+type Album @model{
+    id: ID!
+    name: String!
+    photos: [Photo] @connection(name: "AlbumPhotos")
+}
+
+type Photo @model{
+    id: ID!
+    album: Album @connection(name: "AlbumPhotos")
+}
+```
+
+Define what `@model` and `@connection` do.
+
+## Save data
+
+Here's how you would mutate data on iOS.
+
+<MultiCodeBlock>
+
+```react
+code here
+```
+
+```ios
+code here
+```
+
+```android
+code here
+```
+</MultiCodeBlock>
+
+## Query data
+
+Code to create a barebones frontend
+
+<MultiCodeBlock>
+
+```react
+code here
+```
+
+```ios
+code here
+```
+
+```android
+code here
+```
+</MultiCodeBlock>
+
+## Run app locally
+
+Show a list of albums and photos in a tabular format similar to:
+
+![gif](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2019/11/26/2019-11-26_13-14-56-1.gif)
+
+
+## Push backend to the cloud
+
+```bash
+amplify push
+```
+
+Talk about environments. Show a GIF of the backend in the Amplify Console.
+
+![console](https://miro.medium.com/max/2656/1*7-H3RwNuGSUklmwsSWY30A.png)

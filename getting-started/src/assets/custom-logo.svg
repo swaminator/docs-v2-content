@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="187px" height="31px" viewBox="0 0 187 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 8</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="74.916705%" y1="42.4643507%" x2="18.2326755%" y2="84.4872346%" id="linearGradient-1">
+            <stop stop-color="#FFC300" offset="0%"></stop>
+            <stop stop-color="#FF9000" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#FFB300" offset="0%"></stop>
+            <stop stop-color="#FF9900" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="tweets" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-2" transform="translate(-3241.000000, -7139.000000)">
+            <g id="Group-8" transform="translate(3241.000000, 7139.000000)">
+                <g id="Group-7">
+                    <g id="Logos/Amplify-Logo">
+                        <g id="Group">
+                            <path d="M8.82823698,16.552726 L12.5278415,10.5028425 L15.7041623,15.7006507 L9.51359171,25.8238493 L21.8902121,25.8238493 L25.0534226,31 L0,31 L8.82823698,16.552726 Z M14.1971278,7.76690137 L17.246866,2.77632603 L34.5066389,30.9999151 L28.3942783,30.9999151 L14.1971278,7.76690137 Z M18.944317,0 L25.0485401,0 L44,31 L37.8880915,31 L18.944317,0 Z" id="Fill-1" fill="url(#linearGradient-1)"></path>
+                            <polyline id="Fill-1" points="0 31 25.1428571 31 21.9683548 25.7234043 9.54755288 25.7234043"></polyline>
+                        </g>
+                    </g>
+                </g>
+                <rect id="Rectangle-39" fill="url(#linearGradient-2)" fill-rule="nonzero" x="134" y="6" width="53" height="22"></rect>
+                <text id="DOCS" font-family="AmazonEmber-Bold, Amazon Ember" font-size="14" font-weight="bold" fill="#FEFEFE">
+                    <tspan x="141" y="22">DOCS</tspan>
+                </text>
+                <text id="AMPLIFY" font-family="AmazonEmber-Regular, Amazon Ember" font-size="20" font-weight="normal" fill="#4A4A4A">
+                    <tspan x="48" y="25">AMPLIFY</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,39 @@
+---
+title: '3. Set up authorization rules'
+description: Authorization rules for your GraphQL API
+---
+
+## Authorization
+
+Authorization is required for applications to interact with your GraphQL API. API Keys are best used for public APIs (or parts of your schema which you wish to be public) or prototyping, and you must specify the expiration time before deploying. IAM authorization uses Signature Version 4 to make request with policies attached to Roles. OIDC tokens provided by Amazon Cognito User Pools or 3rd party OpenID Connect providers can also be used for authorization, and simply enabling this provides a simple access control requiring users to authenticate to be granted top level access to API actions. You can set finer grained access controls using @auth on your schema which leverages authorization metadata provided as part of these tokens or set on the database items themselves.
+
+## Define authorization rules
+
+Only owners can upload photos
+
+Anyone can view
+
+```js:title=amplify/backend/api/photoalbums/schema.graphql
+
+type Album @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    name: String!
+    photos: [Photo] @connection(name: "AlbumPhotos")
+}
+
+type Photo @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    album: Album @connection(name: "AlbumPhotos")
+}
+```
+
+```
+amplify push
+```
+
+## Test authorization rules
+
+```
+amplify mock
+```
+

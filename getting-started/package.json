@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "gatsby develop",
+    "build": "gatsby build"
+  },
+  "dependencies": {
+    "gatsby": "^2.19.7",
+    "gatsby-theme-apollo-docs": "4.0.3",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "keywords": [],
+  "name": "gatsby-theme-apollo-docs-hello-world",
+  "description": ""
+}
