@@ -1,11 +1,13 @@
-## Build getting started guide
+There are two separate sites:
+
+## Getting started guide
 ```
 cd getting-started
 npm install
 npm start
 ```
 
-## Build Library
+## Amplify Libraries
 ```
 cd lib
 npm install
