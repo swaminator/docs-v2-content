@@ -7,9 +7,9 @@ npm install
 npm start
 ```
 
-## Amplify Libraries
+## Amplify Lib
 ```
-cd lib
+cd <platform>
 npm install
 npm start
 ```
