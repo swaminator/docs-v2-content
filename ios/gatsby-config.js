@@ -48,11 +48,15 @@ module.exports = {
         baseUrl: 'https://www.amplify.aws',
         twitterHandle: 'awsamplify',
         defaultVersion: 'default',
+        versions: {
+          'default': 'master',
+          'sdk': 'sdk'
+        },
         navConfig,
         footerNavConfig,
         root: __dirname,
-        subtitle: 'Amplify JS',
-        description: 'How to use the Amplify Framework',
+        subtitle: 'Amplify iOS',
+        description: 'How to use the Amplify iOS',
         sidebarCategories: {
           null: ['index'],
           'Authentication': [
