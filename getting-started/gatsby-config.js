@@ -62,6 +62,9 @@ module.exports = {
             'start/authz',
             'start/storage',
             'start/hosting'
+          ],
+          'Get Started (React Native)': [
+            'start-rn/intro'
           ]
         }
       }

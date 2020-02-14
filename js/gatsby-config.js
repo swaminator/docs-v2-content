@@ -96,7 +96,12 @@ module.exports = {
             'api-rest/authz'
           ],
           'Storage': [
-            'api/intro'
+            'storage/start',
+            'storage/access',
+            'storage/upload',
+            'storage/download',
+            'storage/delete',
+            'storage/autotrack'
           ],
           'Datastore': [
             'datastore/intro',

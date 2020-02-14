@@ -47,6 +47,7 @@ module.exports = {
         menuTitle: 'Amplify Framework',
         baseUrl: 'https://www.amplify.aws',
         twitterHandle: 'awsamplify',
+        githubRepo: 'swaminator/docs-v2-content',
         defaultVersion: 'default',
         versions: {
           'default': 'master',
