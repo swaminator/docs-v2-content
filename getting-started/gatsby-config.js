@@ -65,6 +65,9 @@ module.exports = {
           ],
           'Get Started (React Native)': [
             'start-rn/intro'
+          ],
+          'Get Started (iOS)': [
+            'start-rn/intro'
           ]
         }
       }
