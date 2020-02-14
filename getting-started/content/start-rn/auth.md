@@ -1,5 +1,5 @@
 ---
-title: 2. Authentication
+title: 2. React Native Amplify Authentication
 description: Adding Authentication to React Native with AWS Amplify
 ---
 

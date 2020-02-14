@@ -1,5 +1,5 @@
 ---
-title: 1. Introduction
+title: 1. React Native Amplify Introduction
 description: Start here to learn how to build fullstack React Native Expo and React Native
 ---
 
