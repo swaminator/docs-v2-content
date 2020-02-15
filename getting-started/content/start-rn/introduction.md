@@ -5,7 +5,7 @@ description: Start here to learn how to build fullstack React Native Expo and Re
 
 ## Getting started with AWS Amplify & React Native
 
-This guide will walk you through the following steps:
+__This guide will walk you through the following steps:__
 
 - Creating a new React Native application
 - Installing and configuring the the Amplify Client libraries
