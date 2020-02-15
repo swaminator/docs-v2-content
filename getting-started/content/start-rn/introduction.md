@@ -113,7 +113,7 @@ Next, configure the Amplify CLI
 $ amplify configure
 ```
 
-To see a quick video walkthrough of how to configure the Amplify CLI, click [here](https://www.youtube.com/watch?v=fWbM5DLh25U](https://www.youtube.com/watch?v=fWbM5DLh25U).
+To see a quick video walkthrough of how to configure the Amplify CLI, click [here](https://www.youtube.com/watch?v=fWbM5DLh25U).
 
 ### Creating a new Amplify project
 
