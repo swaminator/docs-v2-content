@@ -1,4 +1,4 @@
-There are two separate sites:
+There are separate sites for Getting started and libraries
 
 ## Getting started guide
 ```
@@ -13,5 +13,3 @@ cd <platform>
 npm install
 npm start
 ```
-
-
