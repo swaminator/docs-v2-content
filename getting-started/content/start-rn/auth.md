@@ -3,9 +3,9 @@ title: 2. React Native Amplify Authentication
 description: Adding Authentication to React Native with AWS Amplify
 ---
 
-### In this guide, you'll learn how to add Authentication to a React Native app with AWS Amplify
-
 ##  Adding Authentication with AWS Amplify and React Native
+
+__In this guide, you'll learn how to add Authentication to a React Native app with AWS Amplify__
 
 Now that you've created and configured a React Native project and initialized a new React Native app, we can add a feature. The first feature we will add is authentication.
 
