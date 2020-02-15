@@ -10,4 +10,37 @@ description: Start here to learn how to build fullstack web and mobile apps with
 
 ## Complex objects
 
-## Directivess
+## Directives
+
+## Named Connections
+
+The name argument specifies a name for the connection and it’s used to create bi-directional relationships that reference the same underlying foreign key.
+
+For example, if you wanted your `Post.comments` and `Comment.post` fields to refer to opposite sides of the same relationship, you need to provide a name.
+
+```
+type Blog @model {
+  id: ID!
+  name: String!
+  posts: [Post] @connection(name: "BlogPosts")
+}
+
+type Post @model {
+  id: ID!
+  title: String!
+  blog: Blog! @connection(name: "BlogPosts")
+}
+```
+Will generate the Models with 
+```
+public struct Blog: Model {
+...
+  public var posts: List<Post>?
+  ...
+}
+public struct Post: Model {
+...
+  public var blog: Blog
+  ...
+}
+```
