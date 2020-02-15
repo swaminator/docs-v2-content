@@ -137,8 +137,8 @@ $ amplify init
 
 Once the amplify project has been initialized, you should see the following artifacts in your project:
 
-1. *src/aws-exports.js* - This file will hold the key value pairs of the resource information for the services created by the CLI.
-2. *amplify* directory - This will hold any back end code you will write for things like GraphQL schemas and serverless functions managed by the AWS services we'll be using.
+1. __src/aws-exports.js__ - This file will hold the key value pairs of the resource information for the services created by the CLI.
+2. __amplify__ directory - This will hold any back end code you will write for things like GraphQL schemas and serverless functions managed by the AWS services we'll be using.
 
 ### Adding Amplify imports
 
