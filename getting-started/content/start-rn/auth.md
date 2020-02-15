@@ -7,20 +7,24 @@ description: Adding Authentication to React Native with AWS Amplify
 
 __This guide will show you how to add Authentication to a React Native app with AWS Amplify__
 
-Now that you've created and configured a React Native project and initialized a new React Native app, we can add a feature. The first feature we will add is authentication.
+Now that you've created and configured a React Native project and initialized a new React Native app, you can add a feature. The first feature you will add is authentication.
 
-Amplify CLI allows you to add new features using the `add` command. Here, we will be adding Amazon Cognito, a managed authentication service:
-
+Amplify CLI allows you to add new features using the `add` command. Here, you will be adding Amazon Cognito, a managed authentication service:
 
 ```sh
 $ amplify add auth
 
+? Do you want to use the default authentication and security configuration? Default configuration
+? How do you want users to be able to sign in? Username
+? Do you want to configure advanced settings?  No, I am done.
 ```
 
 To deploy the service, run the `push` command:
 
 ```sh
 $ amplify push
+
+? Are you sure you want to continue? Y
 ```
 
 Now, open __App.js__ and make the following changes:
@@ -39,10 +43,24 @@ export default withAuthenticator(App)
 
 Now, run the app to see the new Authentication flow protecting the app:
 
+### With Expo
+
+```sh
+$ expo start
+```
+
+### With the React Native CLI
+
 ```sh
 $ npx react-native run-ios
 ```
 
-In this example, we used the React Native UI library and the `withAuthenticator` to quickly get up and running with a real-world authentication flow. You can also customize this component to add or remove fields, update styling, or other configurations. To configure this component, check out the documentation [here]().
+Now you should see the app load with an authentication flow allowing users to sign up and sign in.
 
-In addition to the `withAuthenticator` you can build custom authentication flows using the `Auth` class. `Auth` has over 30 methods including `signUp`, `signIn`, `forgotPasword`, and `signOut` that allow you full control over all aspects of the user authentication flow. Check out the complete API [here](https://aws-amplify.github.io/amplify-js/api/classes/authclass.html)
+In this example, you used the React Native UI library and the `withAuthenticator` to quickly get up and running with a real-world authentication flow.
+
+You can also customize this component to add or remove fields, update styling, or other configurations. To configure this component, check out the documentation [here]().
+
+In addition to the `withAuthenticator` you can build custom authentication flows using the `Auth` class.
+
+`Auth` has over 30 methods including `signUp`, `signIn`, `forgotPasword`, and `signOut` that allow you full control over all aspects of the user authentication flow. Check out the complete API [here](https://aws-amplify.github.io/amplify-js/api/classes/authclass.html)
