@@ -3,9 +3,14 @@ title: 1. React Native Amplify Introduction
 description: Start here to learn how to build fullstack React Native Expo and React Native
 ---
 
-### In this guide, you'll learn how to integrate AWS Amplify in a React Native application.
+## Getting started with AWS Amplify & React Native
 
-##  Getting Started
+This guide will walk you through the following steps:
+
+- Configuring the Amplify CLI
+- Installing and configuring the the Amplify Client libraries
+- Creating a new Amplify project
+- Configuring the React Native project to work with the new Amplify project.
 
 The first thing you should do is initialize a new [React Native application](https://facebook.github.io/react-native/docs/getting-started). There are two ways to do this:
 
@@ -132,9 +137,9 @@ $ amplify init
 Once the amplify project has been initialized, you should see the following artifacts in your project:
 
 1. *src/aws-exports.js* - This file will hold the key value pairs of the resource information for the services created by the CLI.
-2. *amplify* directory - This will hold the back end code we write for things like GraphQL schemas and serverless functions managed by the AWS services we'll be using.
+2. *amplify* directory - This will hold any back end code you will write for things like GraphQL schemas and serverless functions managed by the AWS services we'll be using.
 
-### Adding Amplify imports in App.js
+### Adding Amplify imports
 
 Finally, open __App.js__ (Expo) or __index.js__(React Native CLI) and add the following lines of code at the top of the file below the last import:
 
