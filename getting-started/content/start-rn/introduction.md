@@ -7,8 +7,9 @@ description: Start here to learn how to build fullstack React Native Expo and Re
 
 This guide will walk you through the following steps:
 
-- Configuring the Amplify CLI
+- Creating a new React Native application
 - Installing and configuring the the Amplify Client libraries
+- Configuring the Amplify CLI
 - Creating a new Amplify project
 - Configuring the React Native project to work with the new Amplify project.
 
