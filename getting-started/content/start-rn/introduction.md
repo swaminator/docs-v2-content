@@ -72,7 +72,7 @@ $ cd ../
 
 Now open __ios/RNAmpIntr/Info.plist__ and add the following properties:
 
-```plist
+```
 <key>UIAppFonts</key>
 <array>
   <string>AntDesign.ttf</string>
