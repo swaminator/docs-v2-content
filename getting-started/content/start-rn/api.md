@@ -3,6 +3,8 @@ title: 3. React Native Amplify API
 description: Adding a GraphQL to React Native with AWS Amplify
 ---
 
+##  Adding an API to React Native with AWS Amplify
+
 __This guide will show you how to add an API and database to a React Native app with AWS Amplify.__
 
 The Amplify CLI supports creating and interacting with two types of APIs: REST and GraphQL.
