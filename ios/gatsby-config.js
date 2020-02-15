@@ -83,20 +83,23 @@ module.exports = {
             'api-gql/mutatedata',
             'api-gql/subscribedata',
             'api-gql/configauth',
-            'api-gql/offline',
-            'api-gql/synchronization',
-            'api-gql/customresolvers',
             'api-gql/graphqlserver',
             'api-gql/manualconfig'
           ],
           'REST API': [
-            'api-rest/start',
-            'api-rest/fetch',
-            'api-rest/update',
-            'api-rest/authz'
+            'api-rest/intro',
+            'api-rest/start'
           ],
           'Storage': [
-            'api/intro'
+            'storage/intro',
+            'storage/start',
+            'storage/upload',
+            'storage/download',
+            'storage/geturl',
+            'storage/list',
+            'storage/remove',
+            'storage/escapehatch',
+            'storage/configureaccess'
           ],
           'Datastore': [
             'datastore/intro',

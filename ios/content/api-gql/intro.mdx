@@ -25,6 +25,14 @@ Client Architecture (Diagram showing end to end flow from client to backend (App
 Amplify CLI (What does the CLI do for API category?)
 Code generation <iOS/Android>
 Resolvers
-Client integration
+
+## Client integration
+
+
+You can use any HTTP or GraphQL client to connect to a GraphQL API on AppSync. We do recommend using the Amplify clients which are optimized to connect to the AppSync backend. There are some options depending on your application's use case:
+
+For DynamoDB data sources, use the DataStore category in the Amplify client. It provides the best developer experience and built-in conflict detection and resolution.
+For non-DynamoDB data sources in scenarios where you have no offline requirements, use the API (GraphQL) category in the Amplify client.
+For non-DynamoDB data sources in scenarios where you have offline requirements, use the AppSync SDK.
 
 ### Terminology
