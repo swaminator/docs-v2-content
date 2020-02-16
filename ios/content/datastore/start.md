@@ -1,6 +1,6 @@
 ---
-title: Set up backend
-description: Set up your backend a
+title: Get Started
+description: Get Started using Amplify iOS DataStore
 ---
 
 ## Model Generation
@@ -57,7 +57,7 @@ amplify codegen models
 
 When a schema changes and Model generation re-runs, it will evaluate the changes and create a versioned hash if any changes are detected which impact the underlying on-device storage structure. For example types being added/deleted or fields becoming required/optional. DataStore evaluates this version on startup and if there are changes the local items on device will be removed and a full sync from AppSync will take place if you are syncing with the cloud. Local migrations on device are not supported. If you are syncing with the cloud the structure and items of that data in your DynamoDB table will not be touched as part of this process.
 
-## Setup
+## Client Setup
 
 Open your AppDelegate and add the following code:
 
@@ -76,6 +76,7 @@ do {
     print("An error occurred setting up Amplify: \(error)")
 }
 ```
+**## This is different than JS where we have a sample React App**
 
 ## Save Data
 
@@ -110,3 +111,7 @@ Querying data is always against the locally synchronized data, which is updated 
       }
 }
 ```
+
+## API Reference   
+
+For the complete API documentation for DataStore, visit our [API Reference](https://aws-amplify.github.io/amplify-ios/api/classes/datastoreclass.html)

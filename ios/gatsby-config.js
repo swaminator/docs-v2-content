@@ -108,7 +108,7 @@ module.exports = {
             'datastore/data-access',
             'datastore/sync',
             'datastore/relational',
-            'datastore/conflict',
+            'datastore/conflict'
           ],
           'Analytics': [
             'analytics/start',
