@@ -49,10 +49,6 @@ module.exports = {
         twitterHandle: 'awsamplify',
         githubRepo: 'swaminator/docs-v2-content',
         defaultVersion: 'default',
-        versions: {
-          'default': 'master',
-          'sdk': 'sdk'
-        },
         navConfig,
         footerNavConfig,
         root: __dirname,
