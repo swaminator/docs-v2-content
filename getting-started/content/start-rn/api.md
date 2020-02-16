@@ -3,11 +3,11 @@ title: 3. React Native Amplify API
 description: Adding a GraphQL to React Native with AWS Amplify
 ---
 
-##  Adding an API to React Native with AWS Amplify
+##  Adding an API to a React Native app with AWS Amplify
 
 __This guide will show you how to add an API and database to a React Native app with AWS Amplify.__
 
-The Amplify CLI supports creating and interacting with two types of APIs: REST and GraphQL.
+The Amplify CLI supports creating and interacting with two types of API categories: REST and GraphQL.
 
 The API you will be creating in this step is a GraphQL API using AWS AppSync (a managed GraphQL service) and the database will be Amazon DynamoDB (a NoSQL database).
 
@@ -151,7 +151,7 @@ export default App
 
 Let's walk through some of the functions:
 
-__useEffect__ - When the component loads, the `useEffect` hook is called and it invokes `fetchTodos`.
+__useEffect__ - When the component loads, the `useEffect` hook is called and it invokes the `fetchTodos` function.
 
 __fetchTodos__ - Uses the Amplify `API` category to call the AppSync GraphQL API with the `listTodos` query. Once the data is returned, the items array is passed in to the `setTodos` function to update the local state.
 
