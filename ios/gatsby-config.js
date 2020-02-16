@@ -49,10 +49,6 @@ module.exports = {
         twitterHandle: 'awsamplify',
         githubRepo: 'swaminator/docs-v2-content',
         defaultVersion: 'default',
-        versions: {
-          'default': 'master',
-          'sdk': 'sdk'
-        },
         navConfig,
         footerNavConfig,
         root: __dirname,
@@ -112,7 +108,7 @@ module.exports = {
             'datastore/data-access',
             'datastore/sync',
             'datastore/relational',
-            'datastore/conflict',
+            'datastore/conflict'
           ],
           'Analytics': [
             'analytics/start',
