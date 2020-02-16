@@ -114,9 +114,8 @@ module.exports = {
             'analytics/start',
             'analytics/record',
             'analytics/autotrack',
-            'analytics/streaming',
-            'analytics/storing',
-            'analytics/personalize',
+            'analytics/identifyuser',
+            'analytics/escapehatch'
           ],
           'Predictions': [
             'predictions/intro',
