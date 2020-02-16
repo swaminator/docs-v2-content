@@ -28,7 +28,7 @@ $ amplify add api
 ? Do you want to edit the schema now? Y
 ```
 
-The CLI should open the schema in your text editor.
+The CLI should open this schema in your text editor.
 
 ```graphql
 # amplify/backend/api/myapi/schema.graphql
@@ -63,10 +63,106 @@ $ amplify push
 ? Enter maximum statement depth [increase from default if your schema is deeply nested]: 2
 ```
 
-Now, the API and database have been deployed and you can start interacting with it.
+Now the API and database have been deployed and you can start interacting with it.
 
-Next, open App.js and update it with the following code:
+The API you have deployed is for a Todo app, including operations for creating, reading, updating, deleting, and listing todos.
+
+For a user interface to interact with this API, you will create a way to list and create todos. To do this, you will create a form with a button to create todos and way to fetch and render a list of todos.
+
+Open App.js and update it with the following code (If you are using Expo, you also need to be sure to include the `Amplify.configure` configuration as well):
 
 ```javascript
+import React, { useEffect, useState } from 'react'
+import {
+  View, Text, StyleSheet, TextInput, Button
+} from 'react-native'
 
+import { API, graphqlOperation } from 'aws-amplify'
+import { createTodo } from './src/graphql/mutations'
+import { listTodos } from './src/graphql/queries'
+
+const initialState = { name: '', description: '' }
+
+const App = () => {
+  const [formState, setFormState] = useState(initialState)
+  const [todos, setTodos] = useState([])
+
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+
+  function setInput(key, value) {
+    setFormState({ ...formState, [key]: value })
+  }
+
+  async function fetchTodos() {
+    try {
+      const todoData = await API.graphql(graphqlOperation(listTodos))
+      const todos = todoData.data.listTodos.items
+      setTodos(todos)
+    } catch (err) { console.log('error fetching todos') }
+  }
+
+  async function addTodo() {
+    try {
+      const todo = { ...formState }
+      setTodos([...todos, todo])
+      setFormState(initialState)
+      await API.graphql(graphqlOperation(createTodo, {input: todo}))
+    } catch (err) {
+      console.log('error creating todo:', err)
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        onChangeText={val => setInput('name', val)}
+        style={styles.input}
+        value={formState.name} 
+      />
+      <TextInput
+        onChangeText={val => setInput('description', val)}
+        style={styles.input}
+        value={formState.description}
+      />
+      <Button title="Create Todo" onPress={addTodo} />
+      {
+        todos.map((todo, index) => (
+          <View key={todo.id ? todo.id : index} style={styles.todo}>
+            <Text style={styles.todoName}>{todo.name}</Text>
+            <Text>{todo.description}</Text>
+          </View>
+        ))
+      }
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  todo: {  marginBottom: 15 },
+  input: { height: 50, backgroundColor: '#ddd', marginBottom: 10, padding: 8 },
+  todoName: { fontSize: 18 }
+})
+
+export default App
+```
+
+Let's walk through some of the functions:
+
+__useEffect__ - When the component loads, the `useEffect` hook is called and it invokes `fetchTodos`.
+
+__fetchTodos__ - Uses the Amplify `API` category to call the AppSync GraphQL API with the `listTodos` query. Once the data is returned, the items array is passed in to the `setTodos` function to update the local state.
+
+__createTodo__ - Uses the Amplify API category to call the AppSync GraphQL API with the `createTodo` mutation. A difference between the `listTodos` query and the `createTodo` mutation is that `createTodo` accepts an argument containing the variables needed for the mutation.
+
+Next, run the app and you should see the form rendered to the screen and be able to create and view the list of todos:
+
+```sh
+$ expo start
+
+# or
+
+$ npx react-native run-ios
 ```
