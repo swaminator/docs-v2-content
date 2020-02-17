@@ -5,10 +5,10 @@ description: Start here to learn how to build fullstack web and mobile apps with
 
 The API category provides a solution for making HTTP requests to REST and GraphQL endpoints. It includes a [AWS Signature Version 4](http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) signer class which automatically signs all AWS API requests for you as well as methods to use API Keys, Amazon Cognito User Pools, or 3rd party OIDC providers.
 
-## Prerequisites
+## Set up your backend
 
-* Xcode 11.x+
-* An iOS project targeting at least iOS 11.0.
+**Prerequisites:**
+* An Android project targeting at least Android API 15 (Ice Cream Sandwich).
 * Install and configure the Amplify CLI
 
 ```terminal
@@ -16,205 +16,179 @@ $ npm install -g @aws-amplify/cli
 $ amplify configure
 ```
 
-## Set up your backend
-### New backend 
+**Steps**
+
 Go to your project directory and run the following commands to get a fully functioning AppSync backend with API category.
 
-Run `amplify init` command as shown:
+1 - Run `amplify init` command as shown:
 
-```terminal
+```perl
 $ amplify init
-? Enter a name for the project AmplifAPI
-? Enter a name for the environment dev
-? Choose your default editor: Visual Studio Code
-? Choose the type of app that you're building ios
-? Do you want to use an AWS profile? Yes
-? Please choose the profile you want to use default
+? Enter a name for the project `AmplifyAPI`
+? Enter a name for the environment `dev`
+? Choose your default editor: `Visual Studio Code`
+? Choose the type of app that you are building `android`
+Please tell us about your project
+? Where is your Res directory:  `app/src/main/res`
+? Do you want to use an AWS profile? `Yes`
+? Please choose the profile you want to use `default`
 ```
 
-### Existing backend
-**Add new content here**
-### Add Auth and API
-
-Add Auth and API using the command `amplify add api`. Here is an example:
+2 - Add API `amplify add api`. Here is an example:
 
 ```perl
 ? Please select from one of the below mentioned services: `GraphQL`
 ? Provide API name: `apiName`
 ? Choose the default authorization type for the API `API key`
-? Enter a description for the API key: 
+? Enter a description for the API key:
 ? After how many days from now the API key should expire (1-365): `30`
 ? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
 ? Do you have an annotated GraphQL schema? `No`
 ? Do you want a guided schema creation? `Yes`
-? What best describes your project: `Single object with fields (e.g., “Todo” with ID, name, description)`
-? Do you want to edit the schema now? `Yes`
+? What best describes your project: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
+? Do you want to edit the schema now? `No`
 ```
-### Update schema (optional)
 
-We'll be using this schema:
+This will create the following schema for us to get started with:
 ```ruby
-type Todo @model {
+type Blog @model {
   id: ID!
   name: String!
-  description: String
+  posts: [Post] @connection(name: "BlogPosts")
+}
+
+type Post @model {
+  id: ID!
+  title: String!
+  blog: Blog @connection(name: "BlogPosts")
+  comments: [Comment] @connection(name: "PostComments")
+}
+
+type Comment @model {
+  id: ID!
+  content: String
+  post: Post @connection(name: "PostComments")
 }
 ```
 
-### Push to cloud
-
-Provision the backend with `amplify push` command. Here is an example:
+3 - Provision the backend with `amplify push`:
 ```perl
 ? Are you sure you want to continue? `Yes`
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
-The example above creates a backend with the Todo schema. You can open the AWS Console for AppSync with amplify console api to interact directly with the GraphQL service. When your backend is successfully updated, there should be two newly created files: amplifyconfiguration.json and awsconfiguration.json in your project folder.
 
-## Connect to the backend
-### Choose a client (Amplify Client vs AppSync SDK)
+The example above creates a backend with the types in the schema. You can open the AWS Console for AppSync with
+`amplify console api` to interact directly with the GraphQL service.  When your backend is successfully updated, there should be two files: `amplifyconfiguration.json` and `awsconfiguration.json` in your `app/src/main/res/raw` folder.
 
-**Add new content here**
+4 - Generate the Java models to easily perform operations on your schema with `amplify codegen models`.
 
-### Install dependencies
+```terminal
+The following types do not have '@auth' enabled. Consider using @auth with @model
+	 - Blog
+	 - Post
+	 - Comment
+Learn more about @auth here: https://aws-amplify.github.io/docs/cli-toolchain/graphql#auth
 
-If this is a new project, run pod init to create the Podfile to use CocoaPods to manage your dependencies. Add the following to the Podfile:
 
-```ruby
-target :'YOUR-APP-NAME' do
-    use_frameworks!
-    pod 'AmplifyPlugins/AWSAPIPlugin'
-    pod 'amplify-tools'
-end
+GraphQL schema compiled successfully.
 ```
 
-Close out of the existing Xcode project if you have it open.
+This will generate the Model files to be used with `Amplify.API` to query, mutate, and subscribe to your AppSync endpoint. After build completes, the model files will be generated under `app/src/main/java/com/amplifyframework.datastore.generated.model`.
 
-Install the dependencies via CocoaPods
-```ruby
-pod install --repo-update
-```
+Note: You will see import errors in these files until performing the next steps below.
 
-Open the `.xcworkspace` file created by CocoaPods
-```ruby
-open <YOURAPP>.xcworkspace
-```
-Build your project and you should see the `amplify` folder, `amplifyxc.config`, `awsconfiguration.json`, and `amplifyconfiguration.json`. 
+## Install Amplify libraries and tools
 
-### Initialize Amplify
+Open your **project** `build.gradle` and add `mavenCentral()` as a repository
 
-Initialize Amplify and AWSAPIPlugin.
-
-Add the following imports to the top of your `AppDelegate.swift` file 
-```swift
-import Amplify
-import AmplifyPlugins
-```
-
-Add the follow code to your AppDelegate's `application:didFinishLaunchingWithOptions` method
-```swift
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    let apiPlugin = AWSAPIPlugin(modelRegistration: AmplifyModels())
-    do {
-        try Amplify.add(plugin: apiPlugin)
-        try Amplify.configure()
-        print("Amplify initialized")
-    } catch {
-        print("Failed to configure Amplify \(error)")
-    }
-    return true
-}
-```
-### Add configuration files
-
-1. Click on the top level project on the left panel.
-2. Click on your app under Targets in the left panel that contains Project and Targets.
-3. Click on Build Phases
-4. Expand the Copy Bundle Resources
-5. Click on the + button, and select `awsconfiguration.json` and `amplifyconfiguration.json` to add.
-6. Build and run (`CMD+R`) the app and make sure Amplify is initialized.
-
-### Generate your Model files
-
-1. In `amplifyxc.config`, enable model generation, and save the file.
-    ```ruby
-    modelgen=true
-    ```
-2. Build (`CMD+B`). This will generate the Model files to be used with `Amplify.API` to query, mutate, and subscribe to you AppSync service. After build completes, the model files will be generated under `amplify/generated/models`. When you edit the schema under `amplify/backend/api/<APINAME>/schema.graphql` and build, it will regenerate the Model files.
-
-3. Alternatively, you can run `amplify codegen models` using Amplify CLI. Make sure you set `modelgen=false` if you are using the CLI instead of Amplify Tools.
-
-3. Drag the entire `models` directory over to your project. If you Build the project, the model files will be regenerated under the `amplify` folder. 
-4. Select each model file, and select the app under Target Membership, to make sure it gets added to the target when building the app.
-
-6. Register the models before initializing Amplify in your AppDelegate method.
-    ```
-    ModelRegistry.register(modelType: Todo.self)
-    ```
-Make sure it builds and runs (`CMD+R`) successfully before moving onto the next section.
-
-
-### Configure Authorization mode
-
-***Add new content here***
-
-### Add data
-
-Now that the client is set up, you can run a GraphQL mutation with `Amplify.API.mutate` to create, update, and delete your data.
-
-With the Todo model generated, add the following import and the method..
-
-```swift
-import Amplify
-
-func createTodo() {
-    let todo = Todo(name: "MyTodo", description: "description") // Create an instance of the Model you want to mutate
-    _ = Amplify.API.mutate(of: todo, type: .create) { (event) in  // Call Mutate with the model with `create` mutation type. You can also `update` or `delete`
-        switch event {
-        case .completed(let result):
-            switch result {
-            case .success(let todo):
-                print("Successfully created todo: \(todo)")
-            case .failure(let error):
-                print("Got failed result with \(error.errorDescription)")
-            }
-        case .failed(let error):
-            print("Got failed event with error \(error)")
-        default:
-            print("Should never happen")
-        }
-    }
-}
-
-```
-
-### Query data
-
-Now that you were able to make a mutation, take the `Id` that was printed out and use it in your query to retrieve data.
-
-```swift
-func getTodo() {
-    _ = Amplify.API.query(from: Todo.self, byId: "9FCF5DD5-1D65-4A82-BE76-42CB438607A0") { (event) in
-        switch event {
-        case .completed(let result):
-            switch result {
-            case .success(let todo):
-                guard let todo = todo else {
-                    print("Could not find todo")
-                    return
-                }
-                print("Successfully retrieved todo: \(todo)")
-            case .failure(let error):
-                print("Got failed result with \(error.errorDescription)")
-            }
-        case .failed(let error):
-            print("Got failed event with error \(error)")
-        default:
-            print("Should never happen")
-        }
+```gradle
+buildscript {
+    repositories {
+        mavenCentral()
     }
 }
 ```
 
+Next, add the following dependencies to your **app** `build.gradle` and `compileOptions` to work with the Java 8 features used:
+
+```gradle
+android {
+  compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+  implementation 'com.amplifyframework:core:0.9.0'
+  implementation 'com.amplifyframework:aws-api:0.9.0'
+}
+```
+
+Sync the project with Maven and ensure it builds successfully.
+
+## (Optional) Add Gradle Plugin to auto generate models
+
+If you would like your models to easily update both locally and on the server when you make changes to your schema, follow these steps to install our Gradle Plugin which automates the whole process on build:
+
+1 - Add the following dependencies to your **project** `build.gradle`:
+
+* `classpath 'com.amplifyframework:amplify-tools-gradle-plugin:0.2.0'` as a dependency
+* A plugin of `'com.amplifyframework.amplifytools'` as in the example below:
+
+```gradle
+buildscript {
+  dependencies {
+      classpath 'com.android.tools.build:gradle:3.5.0'
+      classpath 'com.amplifyframework:amplify-tools-gradle-plugin:0.2.0'
+  }
+}
+
+apply plugin: 'com.amplifyframework.amplifytools'
+```
+
+2 - Run 'Make Project'
+
+When the build is successful, it adds two gradle tasks to you project - `modelgen` and `amplifyPush`. These can be found in the configuration dropdown menu which currently would display app if it's a new project, up where you would run your project. Whenever you update your schema (found at `amplify/backend/api/amplifyDatasource/schema.graphql`) run the `modelgen` task followed by `amplifyPush` to update your online resources and local Java models.
+
+## Initialize Amplify
+
+Add the following imports at the top of your MainActivity and code at the bottom of the `onCreate` method (ideally this would go in your Application class but this works for getting started quickly):
+
+```java
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserStateDetails;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+	AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+	    @Override
+	    public void onResult(UserStateDetails userStateDetails) {
+		try {
+		    Amplify.addPlugin(new AWSApiPlugin());
+		    Amplify.configure(getApplicationContext());
+		    Log.i("ApiQuickstart", "All set and ready to go!");
+		} catch (Exception e) {
+		    Log.e("ApiQuickstart", e.getMessage());
+		}
+	    }
+
+	    @Override
+	    public void onError(Exception e) {
+		Log.e("ApiQuickstart", "Initialization error.", e);
+	    }
+	});
+    }	
+}
+```
 ## Local mocking
 
 *** Link to local mocking section in CLI ***

@@ -5,7 +5,7 @@ description:
 
 ## Set Up Your Backend
 
-In a terminal window, navigate to your project folder (the folder that contains your app `.Xcodeproj` file), and add the SDK to your app.
+In a terminal window, navigate to your project folder (the folder that contains your app `.Android Studioproj` file), and add the SDK to your app.
 
 ```terminal
 $ cd ./YOUR_PROJECT_FOLDER
@@ -28,53 +28,25 @@ When configuration of your API is complete, the CLI displays a message confirmin
 $ amplify push
 ```
 
-## Connect to Your Backend
+## Working with the API
 
-Add `AWSAPIGateway` to your Podfile:
+Next make a call using one of the HTTP verbs under `Amplify.API` such as a GET:
 
-```ruby
+```java
+final Map parameters = new HashMap<>();
+parameters.put("lang", "en_US");
 
-	target :'YOUR-APP-NAME' do
-	  use_frameworks!
+RestOptions options = new RestOptions("/items", parameters);
 
-	    pod 'Amplify', :path => '~/aws-amplify/amplify-ios'
-        pod 'AWSPluginsCore', :path => '~/aws-amplify/amplify-ios'
-        pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/aws-amplify/amplify-ios'
-	end
-```
-
-Run `pod install --repo-update` and then add `awsconfiguration.json` and `amplifyconfiguration.json` file to your project **(File->Add Files to ..->Add)** and then build your project, ensuring there are no issues.
-
-Add the following code to your app:
-
-```swift                                
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        AWSMobileClient.default().initialize { (userState, error) in
-            guard error == nil else {
-                print("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
-                return
-            }
-            guard let userState = userState else {
-                print("userState is unexpectedly empty initializing AWSMobileClient")
-                return
-            }
-
-            print("AWSMobileClient initialized, userstate: \(userState)")
-        }
-
-        // Amplify section
-        let apiPlugin = AWSAPIPlugin()
-        try! Amplify.add(plugin: apiPlugin)
-        try! Amplify.configure()
-        print("Amplify initialized")
-
-        return true
+Amplify.API.get("myAPI", options, new ResultListener<RestResponse>() {
+    @Override
+    public void onResult(RestResponse restResponse) {
+        Log.i("SUCCESS", restResponse.toString());
     }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Log.e("RESTERROR", throwable.toString());
+    }
+});
 ```
-
-## IAM authorization
-
-To invoke an API Gateway endpoint from your application, For AWS IAM authorization use the `AWSMobileClient` as outlined in the authentication section.
-
-**Update this to have authorization mode included here rather than link**

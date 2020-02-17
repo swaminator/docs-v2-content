@@ -52,8 +52,8 @@ module.exports = {
         navConfig,
         footerNavConfig,
         root: __dirname,
-        subtitle: 'Amplify iOS',
-        description: 'How to use the Amplify iOS',
+        subtitle: 'Amplify Android',
+        description: 'How to use the Amplify Android',
         sidebarCategories: {
           null: ['index'],
           'Authentication': [
@@ -89,7 +89,8 @@ module.exports = {
           ],
           'REST API': [
             'api-rest/intro',
-            'api-rest/start'
+            'api-rest/start',
+            'api-rest/authz'
           ],
           'Storage': [
             'storage/intro',

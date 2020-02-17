@@ -5,20 +5,28 @@ description:
 
 ## Record Event
 
-The Amplify Analytics plugin makes it easy to record custom events within the app. The plugin handles retry logic in the event the device looses network connectivity and automatically batches requests to reduce network bandwidth.
+The Amplify analytics plugin also makes it easy to record custom events within the app. The plugin handles retry logic in the event the device looses network connectivity and automatically batches requests to reduce network bandwidth.
 
-```swift
-func recordEvents() {
-    let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                      "eventPropertyIntKey": 123,
-                      "eventPropertyDoubleKey": 12.34,
-                      "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-    let event = BasicAnalyticsEvent("eventName", properties: properties)
-    Amplify.Analytics.record(event: event)
+```java
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.analytics.AnalyticsException;
+import com.amplifyframework.analytics.BasicAnalyticsEvent;
+import com.amplifyframework.analytics.pinpoint.PinpointProperties
 
-    // Plugin will automatically flush events. 
+public void recordEvent() throws AnalyticsException {
+
+    // Create an instance of BasicAnalyticsEvent.
+    BasicAnalyticsEvent event = new BasicAnalyticsEvent("Amplify-event" + UUID.randomUUID().toString(),
+            PinpointProperties.builder()
+            .add("DemoProperty1", "DemoValue1")
+            .add("DemoProperty2", 2.0)
+            .build());
+
+    Amplify.Analytics.recordEvent(event);
+
+    // Plugin will automatically flush events.
     // You do not have to do this in the app code.
-    Amplify.Analytics.flushEvents() 
+    Amplify.Analytics.flushEvents()
 }
 ```
 
@@ -39,14 +47,17 @@ Events have default configuration to flush out to the network every 60 seconds. 
                 "pinpointTargeting": {
                     "region": "Region"
                 },
-                "autoFlushEventsInterval": 60
+                "autoFlushEventsInterval": 30
             }
         }
     }
 }
 ```
-If you do set `autoFlushEventsInterval` to 0, you are responsible for calling `Amplify..flushEvents()` to flush events.
 
+To manually flush events, call:
+```java
+Amplify.Analytics.flushEvents();
+```
 
 ## Global Properties
 
@@ -69,8 +80,16 @@ Amplify.Analytics.disable()
 ```
 
 ## Enable Analytics
-
-To enable analytics, call:
-```swift
+To re-enable, call:
+```java
 Amplify.Analytics.enable()
 ```
+
+## Disable Analytics
+
+To disable analytics, call:
+```java
+Amplify.Analytics.disable()
+```
+
+
