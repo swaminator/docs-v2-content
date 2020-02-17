@@ -128,19 +128,6 @@ module.exports = {
             'predictions/label-image',
             'predictions/interpret',
             'predictions/escapehatch'
-          ],
-          'Interactions': [
-            'interactions/start',
-            'interactions/chatbot',
-          ],
-          'Push Notifications': [
-            'notifications/start'
-          ],
-          'XR': [
-            'api/intro'
-          ],
-          'PubSub': [
-            'pubsub/start'
           ]
         }
       }
