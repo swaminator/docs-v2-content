@@ -1,5 +1,5 @@
 ---
-title: '4. Store files'
+title: "4. File Storage"
 description: Storage for uploading and downloading photos
 ---
 
@@ -10,13 +10,13 @@ amplify add storage
 ? Who should have access: Auth and guest users
 
 
-? What kind of access do you want for Authenticated users? 
+? What kind of access do you want for Authenticated users?
 ◉ create/update
 ◉ read
 ◉ delete
 
 
-? What kind of access do you want for Guest users? 
+? What kind of access do you want for Guest users?
 ◯ create/update
 ◉ read
 ◯ delete
@@ -53,23 +53,3 @@ type PhotoS3Info {
 ```
 amplify push
 ```
-
-## Render frontend
-
-Code to create a barebones frontend
-
-<MultiCodeBlock>
-
-```react
-code here
-```
-
-```ios
-code here
-```
-
-```android
-code here
-```
-</MultiCodeBlock>
-

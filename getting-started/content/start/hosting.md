@@ -1,20 +1,15 @@
 ---
-title: '5. Deploy and host your app'
+title: "6. Deploy and host your app"
 description: Continuous deployment and hosting
 ---
 
-## Add hosting for your frontend
+## Deploy to Amplify Console
 
 ```
 amplify add hosting
 > Amplify Hosting
 ```
 
-## Continuous deployment
+## Set Up Custom Domain
 
 Opens console to setup CI/CD.
-
-## Manual deployment
-
-Upload files manually
-
