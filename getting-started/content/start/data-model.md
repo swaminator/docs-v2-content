@@ -17,9 +17,8 @@ Given these requirements, we'll need to be able to display a list of phots and u
 
 ```graphql
 type Photo {
-  id: ID!
-  url: String!
-  description: String!
+	id: ID!
+	url: String!
 }
 ```
 
@@ -31,9 +30,8 @@ Since we know we need to store data about the uploaded photos, we first need to 
 
 ```graphql
 type Photo @model {
-  id: ID!
-  url: String!
-  description: String!
+	id: ID!
+	url: String!
 }
 ```
 
@@ -43,11 +41,10 @@ Next, we need to set up some authorization rules around the photos. Only the upl
 
 ```graphql
 type Photo
-  @model(subscriptions: { level: public })
-  @auth(rules: [{ allow: owner, queries: null }]) {
-  id: ID!
-  url: String!
-  description: String!
+	@model(subscriptions: { level: public })
+	@auth(rules: [{ allow: owner, queries: null }]) {
+	id: ID!
+	url: String!
 }
 ```
 
@@ -120,7 +117,8 @@ Open up `src/App.js` and modify it with the following:
 - import React from "react";
 + import React, { useState, useEffect } from "react";
   import "./App.css";
-  import { withAuthenticator } from "aws-amplify-react";
+- import { withAuthenticator } from "aws-amplify-react";
++ import { withAuthenticator, S3Image } from "aws-amplify-react";
 + import { API, graphqlOperation } from 'aws-amplify'
 
 + import { listPhotos } from './graphql/queries'
@@ -155,8 +153,8 @@ Open up `src/App.js` and modify it with the following:
 +       <div className="Photo-gallery">
 +         {!photos.length && <h2>No photos yet.</h2>}
 +         {photos.map(photo => (
-+           <div key={photo.id} className="App-photo-container">
-+             <img className="App-photo" src={photo.url} alt={photo.description} />
++           <div key={photo.id} className="Photo-container">
++             <S3Image className="Photo" imgKey={photo.url} />
 +           </div>
 +         ))}
 +       </div>
@@ -167,4 +165,70 @@ Open up `src/App.js` and modify it with the following:
   export default withAuthenticator(App, true);
 ```
 
-Because we don't have any photos stored, at this point you should see "No photos yet" when you run the app. In the next step we'll set up storage for our photos and handle uploads!
+We're making use of another Amplify component, the `S3Image` component. This helper component gets the public URL of an image stored in S3. Because we don't have any photos stored, at this point you should see "No photos yet" when you run the app.
+
+The next step is to update the styling so that any large images aren't rendered at full size and we have a bit of a grid layout. Open up `src/App.css` and add the following:
+
+```diff
+  .App {
+    text-align: center;
+  }
+
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  .App-link {
+    color: #61dafb;
+  }
+
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
++ .Photo-gallery {
++   display: flex;
++ }
+
++ .Photo-container {
++   width: 250px;
++   height: 250px;
++   margin: 8px;
++ }
+
++ .Photo-container div {
++   width: 100%;
++   height: 100%;
++ }
+
++ .Photo {
++   width: 100%;
++   height: 100%;
++   object-fit: cover;
++ }
+```
+
+In the next step we'll set up storage for our photos and handle uploads!
