@@ -1,5 +1,5 @@
 ---
-title: "4. File Storage"
+title: "4. Handle File Storage"
 description: Storage for uploading and downloading photos
 ---
 
@@ -65,7 +65,7 @@ Open up `src/App.js` and update with the folowing:
 +   import uuid from "uuid/v4";
 
     import { listPhotos } from "./graphql/queries";
-+   import { createPhoto } from "./graphql/mutations";
++   import { createPhoto, deletePhoto } from "./graphql/mutations";
 
     function App() {
         const [photos, setPhotos] = useState([]);
@@ -93,6 +93,15 @@ Open up `src/App.js` and update with the folowing:
 +         );
 +      };
 
++      const createDeletePhotoHandler = photo => {
++         return async () => {
++           if (global.confirm("Are you sure?")) {
++               Storage.remove(photo.url);
++               API.graphql(graphqlOperation(deletePhoto, { input: { id: photo.id } }));
++           }
++         };
++       };
+
         return (
             <div className="App">
 +               <div className="Photo-upload">
@@ -110,6 +119,7 @@ Open up `src/App.js` and update with the folowing:
                     {photos.map(photo => (
                     <div key={photo.id} className="Photo-container">
                         <S3Image className="Photo" imgKey={photo.url} />
++                       <button onClick={createDeletePhotoHandler(photo)}>X</button>
                     </div>
                     ))}
                 </div>
@@ -176,12 +186,25 @@ Now let's update the styling just a bit, open `src/App.js` and add the following
         width: 250px;
         height: 250px;
         margin: 8px;
++       position: relative;
     }
 
     .Photo-container div {
         width: 100%;
         height: 100%;
     }
+
++   .Photo-container button {
++       position: absolute;
++       top: 8px;
++       right: 8px;
++       padding: 8px;
++       background-color: black;
++       color: white;
++       font-weight: bold;
++       cursor: pointer;
++       z-index: 2;
++   }
 
     .Photo {
         width: 100%;
@@ -194,4 +217,6 @@ Now let's update the styling just a bit, open `src/App.js` and add the following
 +   }
 ```
 
-If you upload a new photo, you may notice that it doesn't show immediately in the gallery. This is because we haven't yet set up the realtime functionality needed to do this. We currently only query for the photos when the app loads. In the next step we'll add in some realtime capabilities.
+If you upload a new photo, you should see it update immediately in the gallery, you can also remove photos as well with the button at the top right. If you want to test how it behaves with multiple users, open another browser tab, create a second user, and upload some photos. They should appear in the first tab as well.
+
+Now that we have a fully functioning app, in the next step we'll deploy the application to the web!

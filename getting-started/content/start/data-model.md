@@ -17,8 +17,8 @@ Given these requirements, we'll need to be able to display a list of phots and u
 
 ```graphql
 type Photo {
-	id: ID!
-	url: String!
+  id: ID!
+  url: String!
 }
 ```
 
@@ -30,8 +30,8 @@ Since we know we need to store data about the uploaded photos, we first need to 
 
 ```graphql
 type Photo @model {
-	id: ID!
-	url: String!
+  id: ID!
+  url: String!
 }
 ```
 
@@ -41,10 +41,10 @@ Next, we need to set up some authorization rules around the photos. Only the upl
 
 ```graphql
 type Photo
-	@model(subscriptions: { level: public })
-	@auth(rules: [{ allow: owner, queries: null }]) {
-	id: ID!
-	url: String!
+  @model(subscriptions: { level: public })
+  @auth(rules: [{ allow: owner, queries: null }]) {
+  id: ID!
+  url: String!
 }
 ```
 
