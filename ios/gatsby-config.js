@@ -123,11 +123,11 @@ module.exports = {
             'predictions/text-speech',
             'predictions/transcribe',
             'predictions/translate',
-            'predictions/text-image',
-            'predictions/entity-image',
+            'predictions/identify-text',
+            'predictions/identify-entity',
             'predictions/label-image',
-            'predictions/analyze',
-            'predictions/sample',
+            'predictions/interpret',
+            'predictions/escapehatch'
           ],
           'Interactions': [
             'interactions/start',

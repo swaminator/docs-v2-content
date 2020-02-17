@@ -3,158 +3,153 @@ title: Setup predictions
 description: 
 ---
 
-> Prerequisite: [Install and configure the Amplify CLI](..)
+**Prerequisites:**
+* An iOS project targeting at least iOS 13.0
+* Install and configure the Amplify CLI
 
-## Create new backend
-
-Run the following command in your project's root folder:
-
-```bash
-$ amplify add predictions
+```terminal
+$ npm install -g @aws-amplify/cli
+$ amplify configure
 ```
 
-The CLI will prompt configuration options for the Predictions category such as what type of use case you have (identifying objects from an image, translating text, etc) and default or advanced settings.
+## Automated Configuration
 
-The Predictions category utilizes the Auth category behind the scenes to authorize your app to perform AI/ML actions.
+The Amplify CLI helps you to create the appropriate IAM permissions to hit the AWS machine learning APIs. As part of the automated setup, the CLI helps you provision resources that leverage AWS AI/ML services. In addition to those services, we also support offline functionality and improved responses between online/offline models provided by Apple's CoreML [Vision Framework](https://developer.apple.com/documentation/vision).
 
-The `add` command automatically creates the backend configuration. Once all your configuration is complete run the following:
+To create a project with the Predictions category, run the following command:
 
-```bash
-$ amplify push
+1. Run `amplify init` command as shown:
+
+```terminal
+$ amplify init
+? Enter a name for the project AmplifyPredictions
+? Enter a name for the environment dev
+? Choose your default editor: Visual Studio Code
+? Choose the type of app that you're building ios
+? Do you want to use an AWS profile? Yes
+? Please choose the profile you want to use default
 ```
 
-A configuration file called `aws-exports.js` will be copied to your configured source directory, for example `./src`.
+2. Add auth `amplify add auth` and choose `Default configuration`, allow users to sign in with `Email` and do not configure `advanced settings`
+
+3. Add predictions `amplify add predictions`
+    * choose `Convert (translate text, text to speech), Identify (labels, text, celebs, etc.), or Interpret (language characteristics, sentiment, etc)`
+    * Who should have access: `Auth and guest users`
+
+4. Run `amplify push`to create the resources in the cloud.
+
+When your backend is successfully updated, add `amplifyconfiguration.json` and `awsconfiguration.json` to your project using Xcode. Your new configuration file `awsconfiguration.json` will contain your default project `region` value as well as any necessary configuration options for each predictions method (i.e. target language and source language for translate, etc)
 
 
-## Import existing backend
+## Manual Configuration
 
-The manual setup enables you to use your existing Amazon AI and ML resources in your app.
+If you have already created the resources in the cloud and would like to take advantage of those existing resources but still use the Amplify library in swift, please follow the directions below:
 
-```javascript
-import Amplify from 'aws-amplify';
+Create the file `amplifyconfiguration.json`
+```
+touch amplifyconfiguration.json
+```
 
-Amplify.configure({
-    // To get the AWS Credentials, you need to configure 
-    // the Auth module with your Cognito Federated Identity Pool
-    "Auth": {
-        "identityPoolId": "us-east-1:xxx-xxx-xxx-xxx-xxx",
-        "region": "us-east-1"
-    },
-    "predictions": {
-        "convert": {
-            "translateText": {
-                "region": "us-east-1",
-                "proxy": false,
-                "defaults": {
-                    "sourceLanguage": "en",
-                    "targetLanguage": "zh"
-                }
-            },
-            "speechGenerator": {
-                "region": "us-east-1",
-                "proxy": false,
-                "defaults": {
-                    "VoiceId": "Ivy",
-                    "LanguageCode": "en-US"
-                }
-            },
-            "transcription": {
-                "region": "us-east-1",
-                "proxy": false,
-                "defaults": {
-                    "language": "en-US"
-                }
-            }
-        },
-        "identify": {
-            "identifyText": {
-                "proxy": false,
-                "region": "us-east-1",
-                "defaults": {
-                    "format": "PLAIN"
-                }
-            },
-            "identifyEntities": {
-                "proxy": false,
-                "region": "us-east-1",
-                "celebrityDetectionEnabled": true,
-                "defaults": {
-                    "collectionId": "identifyEntities8b89c648-test",
-                    "maxEntities": 50
-                }
-            },
-            "identifyLabels": {
-                "proxy": false,
-                "region": "us-east-1",
-                "defaults": {
-                    "type": "LABELS"
-                }
-            }
-        },
-        "interpret": {
-            "interpretText": {
-                "region": "us-east-1",
-                "proxy": false,
-                "defaults": {
-                    "type": "ALL"
+Copy the contents over and update the values for the specific predictions method you are looking to use
+```
+{
+    "UserAgent": "aws-amplify-cli/2.0",
+    "Version": "1.0",
+    "Predictions": {
+        "plugins": {
+            "awsPredictionsPlugin": {
+                "defaultRegion": "us-west-2",
+                 "identify": {
+                    "identifyText": {
+                        "format": "ALL",
+                        "region": "us-west-2",
+                        "defaultNetworkPolicy": "auto"
+                    },
+                    "identifyEntities": {
+                        "maxEntities": "0",
+                        "celebrityDetectionEnabled": "true",
+                        "region": "us-west-2",
+                        "defaultNetworkPolicy": "auto"
+                    },
+                    "identifyLabels": {
+                        "region": "us-west-2",
+                        "type": "LABELS",
+                        "defaultNetworkPolicy": "auto"
+                    }
+                },
+                "convert": {
+                    "translateText": {
+                        "targetLang": "zh",
+                        "sourceLang": "en",
+                        "region": "us-west-2",
+                        "defaultNetworkPolicy": "auto"
+                    },
+                    "speechGenerator": {
+                        "voice": "Salli",
+                        "language": "en-US",
+                        "region": "us-west-2",
+                        "defaultNetworkPolicy": "auto"
+                    }
+                },
+                "interpret": {
+                    "interpretText": {
+                        "region": "us-west-2",
+                        "defaultNetworkPolicy": "auto"
+                    }
                 }
             }
         }
     }
-});
-```
-
-### IAM Policy
-
-The Amplify CLI will set appropriate IAM policy for Roles in your Cognito Identity Pool in order to use an appropriate feature. If you are using the library manually you will need to configure this yourself. The below policy demonstrates setting policy for all services in the Predictions category:
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "translate:TranslateText",
-                "polly:SynthesizeSpeech",
-                "transcribe:StartStreamTranscriptionWebSocket",
-                "comprehend:DetectSentiment",
-                "comprehend:DetectEntities",
-                "comprehend:DetectDominantLanguage",
-                "comprehend:DetectSyntax",
-                "comprehend:DetectKeyPhrases",
-                "rekognition:DetectFaces",
-                "rekognition:RecognizeCelebrities"
-                "rekognition:DetectLabels",
-                "rekognition:DetectModerationLabels",
-                "rekognition:DetectText",
-                "rekognition:DetectLabel",
-                "textract:AnalyzeDocument",
-                "textract:DetectDocumentText",
-                "textract:GetDocumentAnalysis",
-                "textract:StartDocumentAnalysis",
-                "textract:StartDocumentTextDetection",
-                "rekognition:SearchFacesByImage"
-            ],
-            "Resource": [
-                "*"
-            ]
-        }
-    ]
 }
 ```
-
-For `rekognition:SearchFacesByImage` you can scope the Resource down to an individual collection such as `arn:aws:rekognition:<REGION>:<ACCOUNT_ID>:collection/<COLLECTION_ID>`. Amplify CLI automatically does this.
+Add both the `amplifyconfiguration.json` and the `awsconfiguration.json` to your project using Xcode.
 
 ## Configure the frontend
 
-Import and load the configuration file in your app. It's recommended you add the Amplify configuration step to your app's root entry point. For example `App.js` in React or `main.ts` in Angular or Ionic.
+Use the following steps to add file storage backend services to your app.
 
-```javascript
-import Amplify from '@aws-amplify/core';
-import Predictions, { AmazonAIPredictionsProvider } from '@aws-amplify/predictions';
-import awsconfig from './aws-exports';
+Add the dependencies to the `Podfile`:
 
-Amplify.configure(awsconfig);
-Amplify.addPluggable(new AmazonAIPredictionsProvider());
+```ruby
+target :'YOUR-APP-NAME' do
+	use_frameworks!
+	pod 'AWSPredictionsPlugin'
+	pod 'AWSMobileClient', '~> 2.12.0'
+end
+```
+
+Run `pod install --repo-update` before you continue.
+
+Add the following code to your AppDelegate:
+
+```swift
+import Amplify
+import AWSMobileClient
+import AmplifyPlugins
+
+// Inside  AppDelegate's application method
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+	// Override point for customization after application launch.
+	AWSMobileClient.default().initialize { (userState, error) in
+		guard error == nil else {
+			print("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
+			return
+		}
+		guard let userState = userState else {
+			print("userState is unexpectedly empty initializing AWSMobileClient")
+			return
+		}
+
+		print("AWSMobileClient initialized, userstate: \(userState)")
+	}
+
+	let predictionsPlugin = AWSPredictionsPlugin()
+	try! Amplify.add(plugin: predictionsPlugin)
+	try! Amplify.configure()
+	print("Amplify initialized")
+
+	window = UIWindow()
+	window?.rootViewController  = MainTabBarController()
+	return true
+}
 ```
