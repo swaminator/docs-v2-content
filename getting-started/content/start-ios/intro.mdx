@@ -1,0 +1,89 @@
+---
+title: 0. Introduction
+description: Start here to learn how to build fullstack web and mobile apps with Amplify
+---
+
+import {colors} from 'gatsby-theme-apollo-core';
+import { Link } from 'gatsby';
+import { Button } from '@apollo/space-kit/Button';
+
+Welcome! This tutorial guides you through building and deploying a full-stack serverless mobile iOS app with the Amplify Framework. 
+
+We want you to feel empowered to build your own production-ready app with Amplify, so 
+we're skipping "Hello World" in favor of an example that's closer to "Real
+World", complete with authentication, data modeling, authorization, storage, and machine learning. As a reminder, this tutorial outlines use of all the categories to build a mobile app, but if you are interestd in just adding a single category to your existing mobile app, make sure you head to the documentation for that specific category instead of following the steps below.
+
+Ready? Let's dive in!
+
+## What we'll build
+
+In this tutorial, we'll we'll use Swift and SwiftUI to build a data-driven mobile app that lets users upload photos to secure photo galleries. We'll access our backend with a GraphQL API that fetches our data stored in a NoSQL database (Amazon DynamoDB). In addition, we'll demonstrate how to authenticate users, communicate with our API, and manage photo uploads. Finally, we add in AI-powered object tagging using Amazon Rekognition, allowing users to discover photos without any manual data entry.
+
+The app includes the following views:
+
+* A login page
+* A list of upcoming launches
+* A detail view for an individual launch
+* A user profile page
+* A cart
+
+## Prerequisites
+
+### System requirements
+
+Before we begin, make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/) v8.x or later
+- [npm](https://www.npmjs.com/) v5.x or later
+- [git](https://git-scm.com/) v2.14.1 or later
+- [cocoapods](https://guides.cocoapods.org/using/getting-started.html)
+- [Xcode](https://developer.apple.com/xcode/)
+
+### Sign up for an AWS account
+
+There are no upfront charges or any term commitments to create an AWS account and signing up gives you immediate access to the AWS Free Tier
+
+<div>
+  <Button
+    size="large"
+    color={colors.primary}
+    as={<Link to="https://portal.aws.amazon.com/billing/signup?redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start" />}
+  >
+    Create AWS Account
+  </Button>
+  </div>
+
+## Install and setup the Amplify CLI
+
+The Amplify command line toolchain provides an easy way to provision and manage AWS cloud services for your app. You can install the CLI by either running the below commands or adding `pod amplify-tools` to your Podfile as instructed in the next step below. Skip this step if you'd like to include it as a pod instead.
+
+```bash
+npm install -g @aws-amplify/cli
+```
+Configure the CLI to work with your AWS account by creating an IAM user. Amazon IAM (Identity and Access Management) enables you to manage users and user permissions in AWS. You can create one or more IAM users in your AWS account. By default, Amplify creates a user with `AdministratorAccess` to your account so you can provision resources. The video below demonstrates how to install and configure the Amplify CLI.
+
+```bash
+amplify configure
+```
+
+<iframe width="500" height="345" src="https://www.youtube.com/embed/fWbM5DLh25U">
+</iframe>
+
+## Run the Amplify starter
+
+Now the fun begins! From your preferred development directory, create a new Xcode project. Then run `pod init` and if you haven't installed the Amplify CLI yet add the following pod to your Podfile:
+
+```ruby
+use_frameworks!
+
+pod 'amplify-tools'
+```
+Then save your podfile and run `pod install`. This should install the Amplify CLI. Once install, cd into your project's directory and run `amplify init` and answer questions in the opinionated walkthrough. This will create the project and all the necesary permissions for you in the cloud.
+
+During the tutorial you'll add capabilities such as authentication, GraphQL API, storage, machine learning and set up authorization rules for the API. As you add features, the `amplify` folder that was created in the root of your project when you ran `amplify init` will grow with infrastructure-as-code templates that define your backend stack. Infrastructure-as-code is a best practice way to create a replicable backend stack.
+
+Now run `xed .` to open the Xcode workspace. Make sure you add the amplify folder to your Xcode workspace so you can see the files in your IDE if you need to. Then, tap the play button in Xcode once the build completes and run the app in a simulator.
+
+## Need help?
+
+Learning a new technology can be overwhelming sometimes, and it's common to get stuck! If you got stuck on this page, open an issue [here](https://github.com/aws-amplify/amplify-ios).

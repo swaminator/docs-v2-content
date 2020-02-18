@@ -64,10 +64,14 @@ module.exports = {
             'start/hosting'
           ],
           'Get Started (React Native)': [
-            'start-rn/intro'
+            'start-rn/introduction',
+            'start-rn/api',
+            'start-rn/auth',
+            'start-rn/storage'
           ],
           'Get Started (iOS)': [
-            'start-rn/intro'
+            'start-ios/intro',
+            'start-ios/schema'
           ]
         }
       }
