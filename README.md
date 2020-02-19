@@ -1,4 +1,7 @@
-There are separate sites for Getting started and libraries
+There are separate sites for Getting started and libraries.
+
+What should we do here?
+
 
 ## Getting started guide
 ```
