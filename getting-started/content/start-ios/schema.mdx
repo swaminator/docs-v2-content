@@ -66,55 +66,6 @@ type Photo @model{
 
 Define what `@model` and `@connection` do.
 
-## Save data
-
-Here's how you would mutate data on iOS. Keep in mind this is just an example of how this would be done with a Todo object, we will walk you through how to do this in our own app later on once we have installed the pods and are all set up in Xcode.
-
-```swift
-    let todo = Todo(name: "MyTodo", description: "description") // Create an instance of the Model you want to mutate
-    _ = Amplify.API.mutate(of: todo, type: .create) { (event) in  // Call Mutate with the model with `create` mutation type. You can also `update` or `delete`
-        switch event {
-        case .completed(let result):
-            switch result {
-            case .success(let todo):
-                print("Successfully created todo: \(todo)")
-            case .failure(let error):
-                print("Got failed result with \(error.errorDescription)")
-            }
-        case .failed(let error):
-            print("Got failed event with error \(error)")
-        default:
-            print("Should never happen")
-        }
-    }
-```
-
-## Query data
-
-This is just an example of how to query data in Swift using the Amplify iOS libraries. We will walk you through how to do it in our own app a bit later on.
-
-```swift
-    _ = Amplify.API.query(from: Todo.self, byId: "9FCF5DD5-1D65-4A82-BE76-42CB438607A0") { (event) in
-        switch event {
-        case .completed(let result):
-            switch result {
-            case .success(let todo):
-                guard let todo = todo else {
-                    print("Could not find todo")
-                    return
-                }
-                print("Successfully retrieved todo: \(todo)")
-            case .failure(let error):
-                print("Got failed result with \(error.errorDescription)")
-            }
-        case .failed(let error):
-            print("Got failed event with error \(error)")
-        default:
-            print("Should never happen")
-        }
-    }
-```
-
 ## Push backend to the cloud
 
 ```bash
@@ -159,4 +110,53 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     }
     return true
 }
+```
+
+## Save data
+
+Here's how you would mutate data on iOS using the API plugin.  These are examples of how you would call API for Todo objects, we will need to adjust this code to fit our GraphQL Schema we created above.
+
+```swift
+    let todo = Todo(name: "MyTodo", description: "description") // Create an instance of the Model you want to mutate
+    _ = Amplify.API.mutate(of: todo, type: .create) { (event) in  // Call Mutate with the model with `create` mutation type. You can also `update` or `delete`
+        switch event {
+        case .completed(let result):
+            switch result {
+            case .success(let todo):
+                print("Successfully created todo: \(todo)")
+            case .failure(let error):
+                print("Got failed result with \(error.errorDescription)")
+            }
+        case .failed(let error):
+            print("Got failed event with error \(error)")
+        default:
+            print("Should never happen")
+        }
+    }
+```
+
+## Query data
+
+This is just an example of how to query data in Swift using the Amplify iOS libraries. We will walk you through how to do it in our own app a bit later on.
+
+```swift
+    _ = Amplify.API.query(from: Todo.self, byId: "9FCF5DD5-1D65-4A82-BE76-42CB438607A0") { (event) in
+        switch event {
+        case .completed(let result):
+            switch result {
+            case .success(let todo):
+                guard let todo = todo else {
+                    print("Could not find todo")
+                    return
+                }
+                print("Successfully retrieved todo: \(todo)")
+            case .failure(let error):
+                print("Got failed result with \(error.errorDescription)")
+            }
+        case .failed(let error):
+            print("Got failed event with error \(error)")
+        default:
+            print("Should never happen")
+        }
+    }
 ```

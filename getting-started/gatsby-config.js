@@ -71,7 +71,8 @@ module.exports = {
           ],
           'Get Started (iOS)': [
             'start-ios/intro',
-            'start-ios/schema'
+            'start-ios/schema',
+            'start-ios/auth'
           ]
         }
       }
