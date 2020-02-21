@@ -53,7 +53,13 @@ There are no upfront charges or any term commitments to create an AWS account an
   </Button>
   </div>
 
-## Install and setup the Amplify CLI
+## Start a new Xcode project
+
+Go ahead and create a new Xcode project by opening Xcode and clicking "Create a new Xcode Project" and then choose a tabbed application and select SwiftUI under the User Interface drop down. You can then go ahead and close this project as we will re-open the Xcode workspace after we set up our Podfile below.
+
+![Xcode](./images/xcode.png)
+
+## Install and setup the Amplify CLI (using Bash)
 
 The Amplify command line toolchain provides an easy way to provision and manage AWS cloud services for your app. You can install the CLI by either running the below commands or adding `pod amplify-tools` to your Podfile as instructed in the next step below. Skip this step if you'd like to include it as a pod instead.
 
@@ -69,14 +75,15 @@ amplify configure
 <iframe width="500" height="345" src="https://www.youtube.com/embed/fWbM5DLh25U">
 </iframe>
 
-## Run the Amplify starter
+## Install and setup the Amplify CLI (using Xcode)
 
-Now the fun begins! From your preferred development directory, create a new Xcode project. Then run `pod init` and if you haven't installed the Amplify CLI yet add the following pod to your Podfile:
+Run `pod init` and add the following pods to your Podfile:
 
 ```ruby
 use_frameworks!
 
 pod 'amplify-tools'
+pod 'Amplify'
 ```
 Then save your podfile and run `pod install`. This should install the Amplify CLI. Once install, cd into your project's directory and run `amplify init` and answer questions in the opinionated walkthrough. This will create the project and all the necesary permissions for you in the cloud.
 

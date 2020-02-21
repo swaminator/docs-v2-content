@@ -18,7 +18,7 @@ A photo album has a `Photo` and `Album` field. An `Album` can contain many `Phot
 A schema is only useful if our data graph conforms to the schema's structure. Enforcing a schema's structure is one of the core features of **GraphQL Transform**. With the GraphQL Transform, you define your application’s data model using the GraphQL Schema Definition Language (SDL) and the library handles converting your SDL definition into a set of fully descriptive AWS CloudFormation templates that implement your data model.
 
 
-From the photoalbums directory, run amplify add api and respond to the prompts like this:
+From the directory of your app, run `amplify add api` and respond to the prompts like this:
 
 ```bash
 $ amplify add api 
@@ -115,19 +115,48 @@ This is just an example of how to query data in Swift using the Amplify iOS libr
     }
 ```
 
-## Run app locally
-
-Show a list of albums and photos in a tabular format similar to:
-
-![gif](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2019/11/26/2019-11-26_13-14-56-1.gif)
-
-
 ## Push backend to the cloud
 
 ```bash
 amplify push
 ```
 
-Talk about environments. Show a GIF of the backend in the Amplify Console.
+As you can see below, you can the resources you are creating in AWS inside the Amplify Console which you can get to anytime just by typing `amplify console` in your bash.
 
 ![console](https://miro.medium.com/max/2656/1*7-H3RwNuGSUklmwsSWY30A.png)
+
+## Add the pod to your podfile
+
+Now that we have created the resource in the cloud, we need to install the Amplify API Plugin so we can take advantage of it in code. Add the following pod to your Podfile:
+
+```ruby
+pod 'AmplifyPlugins/AWSAPIPlugin'
+```
+Now install the dependencies via Cocoapods
+
+```bash
+pod install --repo-update
+```
+## Add the plugin to App Delegate 
+
+Now in your app delegate, let's add the AWS plugin  so that we can use the API category to make calls to our GraphQL Server that we just created. First add the import statements at the top of the file
+
+```swift
+import Amplify
+import AmplifyPlugins
+```
+Then add the following code to your AppDelegate’s `application:didFinishLaunchingWithOptions` method:
+
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    let apiPlugin = AWSAPIPlugin(modelRegistration: AmplifyModels())
+    do {
+        try Amplify.add(plugin: apiPlugin)
+        try Amplify.configure()
+        print("Amplify initialized")
+    } catch {
+        print("Failed to configure Amplify \(error)")
+    }
+    return true
+}
+```
