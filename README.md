@@ -1,4 +1,4 @@
-There are separate sites for Getting started and libraries
+There are separate sites for Getting started and libraries.
 
 ## Getting started guide
 ```
