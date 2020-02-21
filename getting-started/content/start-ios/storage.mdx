@@ -1,0 +1,207 @@
+---
+title: '4. Store files'
+description: Storage for uploading and downloading photos
+---
+
+## Add storage to your backend
+
+Let's add storage to our backend now. Run the following command in your terminal, answering the follow up questions like so:
+
+```
+amplify add storage
+? Who should have access: Auth and guest users
+
+
+? What kind of access do you want for Authenticated users? 
+◉ create/update
+◉ read
+◉ delete
+
+
+? What kind of access do you want for Guest users? 
+◯ create/update
+◉ read
+◯ delete
+
+
+? Do you want to add a Lambda Trigger for your S3 Bucket? No
+```
+
+## Update your data model
+
+Now let's update our data model to account for our new S3 bucket created in the cloud.
+
+```js:amplify/backend/api/photoalbums/schema.graphql
+
+type Album @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    name: String!
+    photos: [Photo] @connection(name: "AlbumPhotos")
+}
+
+type Photo @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    album: Album @connection(name: "AlbumPhotos")
+    bucket: String!
+    fullsize: PhotoS3Info!
+    thumbnail: PhotoS3Info!
+}
+
+type PhotoS3Info {
+    key: String!
+    width: Int!
+    height: Int!
+}
+```
+
+```
+amplify push
+```
+
+## Update Podfile
+
+Now we need to add the storage plugin to our podfile so that we can use it in our app. Update your Podfile with the following pod:
+
+```ruby
+pod 'AmplifyPlugins/AWSS3StoragePlugin'
+```
+Now make sure you run the following command in your terminal to install the dependency:
+
+```bash
+pod install --repo-update
+```
+
+## Update App Delegate
+
+Now we need to initialize the plugin just like we did with the API category so let's head to our `AppDelegate` file and update the application:didFinishLaunchingWithOptions` method once again:
+
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    let apiPlugin = AWSAPIPlugin(modelRegistration: AmplifyModels())
+    let storagePlugin = AWSS3StoragePlugin() //add this line
+    do {
+        try Amplify.add(plugin: apiPlugin)
+        try Amplify.add(plugin: storagePlugin) //and this one
+        try Amplify.configure()
+        print("Amplify initialized")
+    } catch {
+        print("Failed to configure Amplify \(error)")
+    }
+    return true
+}
+```
+
+## Use cases
+
+Now we can use it in code and store photos to our albums! The following are examples of how to implement the uses cases in code
+
+### Upload
+
+To upload to S3 from a data object, specify the key and the data object to be uploaded.
+
+```swift
+func uploadData() {
+    let dataString = "My Data"
+    let data = dataString.data(using: .utf8)!
+    Amplify.Storage.uploadData(key: "myKey", data: data) { (event) in
+        switch event {
+        case .completed(let data):
+            print("Completed: \(data)")
+        case .failed(let storageError):
+            print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+        case .inProcess(let progress):
+            print("Progress: \(progress)")
+        default:
+            break
+        }
+    }
+}
+```
+When you have a file that you want to upload, you can specify the url to the file in the local parameter.
+
+```swift
+
+func uploadFile() {
+  let dataString = "My Data"
+  let fileNameKey = "myFile.txt"
+  let filename = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileNameKey)
+  do {
+      try dataString.write(to: filename, atomically: true, encoding: String.Encoding.utf8)
+  } catch {
+      print("Failed to write to file \(error)")
+  }
+
+  _ = Amplify.Storage.uploadFile(key: fileNameKey, local: filename) { (event) in
+      switch event {
+      case .completed(let data):
+          print("Completed: \(data)")
+      case .failed(let storageError):
+          print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+      case .inProcess(let progress):
+          print("Progress: \(progress)")
+      default:
+          break
+      }
+  }
+}
+```
+
+### Download
+
+If you uploaded the data at key `myKey` like in the previous example, you can retrieve the data using `Amplify.Storage.downloadData` or download to file with `Amplify.Storage.downloadFile`
+
+```swift
+func download() {
+  Amplify.Storage.downloadData(key: "myKey") { (event) in
+      switch event {
+      case .completed(let data):
+          print("Completed: \(data)")
+      case .failed(let storageError):
+          print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+      case .inProcess(let progress):
+          print("Progress: \(progress)")
+      default:
+          break
+      }
+  }
+
+  let downloadToFileName = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("myFile.txt")
+  Amplify.Storage.downloadFile(key: "myFile.txt", local: downloadToFileName) { (event) in
+      switch event {
+      case .completed:
+          print("Completed")
+      case .failed(let storageError):
+          print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+      case .inProcess(let progress):
+          print("Progress: \(progress)")
+      default:
+          break
+      }
+  }
+}
+```
+
+### List 
+
+You can list out all of the objects uploaded with the following code:
+
+```swift
+func list() {
+  Amplify.Storage.list { (event) in
+      switch event {
+      case .completed(let listResult):
+          print("Completed")
+          listResult.items.forEach { (item) in
+              print("Key: \(item.key)")
+          }
+      case .failed(let storageError):
+          print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+      case .inProcess(let progress):
+          print("Progress: \(progress)")
+      default:
+          break
+      }
+  }
+}
+```
+There are many more use cases you can take advantage of with the storage plugin, refer to the docs [here](https://aws-amplify.github.io/docs/ios/storage).

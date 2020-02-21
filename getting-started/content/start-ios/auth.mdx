@@ -104,3 +104,22 @@ Let's update the above code to now pop the drop-in UI when we detect that the Us
         }
     }
 ```
+### Customization of Drop-In UI
+
+Currently, you can change the following properties of the drop-in UI we put in our code in the step above:
+
+- Logo: Any image file of png or jpg
+- Background Color: Any iOS UIColor
+
+```swift
+AWSMobileClient.default()
+    .showSignIn(navigationController: self.navigationController!,
+                     signInUIOptions: SignInUIOptions(
+                           canCancel: false,
+                           logoImage: UIImage(named: "MyCustomLogo"),
+                            backgroundColor: UIColor.black)) { (result, err) in
+                            //handle results and errors               
+}
+```
+
+You can also dismiss the sign in process by setting the canCancel property.
