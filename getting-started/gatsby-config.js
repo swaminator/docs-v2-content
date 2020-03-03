@@ -1,40 +1,38 @@
 const navConfig = {
-  'Amplify 101': {
-    url: '/',
-    description:
-      'Learn about each part of the Amplify platform and how they all work together.'
-  },
-  'Amplify CLI': {
-    url: '/',
-    description:
-      'Amplify command line toolchain for provisioning cloud resources.'
-  },
-  'Amplify Library': {
-    url: '/',
-    description:
-      "Amplify client libraries for iOS, Android, and JavaScript."
-  },
-  'Amplify UI': {
-    url: '/',
-    description:
-      'Framework-specific UI components.'
-  },
-  'Amplify Console': {
-    url: 'https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html',
-    description:
-      'A complete workflow for developing and deploying fullstack serverless apps'
-  }
+	"Amplify 101": {
+		url: "/",
+		description:
+			"Learn about each part of the Amplify platform and how they all work together."
+	},
+	"Amplify CLI": {
+		url: "/",
+		description:
+			"Amplify command line toolchain for provisioning cloud resources."
+	},
+	"Amplify Library": {
+		url: "/",
+		description: "Amplify client libraries for iOS, Android, and JavaScript."
+	},
+	"Amplify UI": {
+		url: "/",
+		description: "Framework-specific UI components."
+	},
+	"Amplify Console": {
+		url: "https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html",
+		description:
+			"A complete workflow for developing and deploying fullstack serverless apps"
+	}
 };
 
 const footerNavConfig = {
-  Blog: {
-    href: 'https://blog.apollographql.com/',
-    target: '_blank',
-    rel: 'noopener noreferrer'
-  },
-  Contribute: {
-    href: 'https://www.apollographql.com/docs/community/'
-  }
+	Blog: {
+		href: "https://blog.apollographql.com/",
+		target: "_blank",
+		rel: "noopener noreferrer"
+	},
+	Contribute: {
+		href: "https://www.apollographql.com/docs/community/"
+	}
 };
 module.exports = {
   plugins: [
