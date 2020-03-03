@@ -1,0 +1,24 @@
+---
+title: Observe data
+description: Observe data using Amplify iOS DataStore
+---
+
+If you are running on iOS 13 or higher, you can subscribe to changes on your Models by using `publisher(for:)` in the DataStore API. This reacts dynamically to updates of data to the underlying Storage Engine, which could be the result of GraphQL Subscriptions as well as Queries or Mutations that run against the backing AppSync API if you are synchronizing with the cloud. 
+
+The `publisher(for:)` API returns an [AnyPublisher](https://developer.apple.com/documentation/combine/anypublisher), only available in iOS 13.0 and above.
+
+```swift
+let postSubscription = Amplify
+    .DataStore
+    .publisher(for: Post.self)
+    .sink(receiveCompletion: { completion in
+        if case .failure(let err) = completion {
+            print("Subscription received error - \(err.localizedDescription)")
+        }
+    }) {
+        print("Subscription received mutation: \($0)")
+}
+
+// When finished observing
+postSubscription.cancel()
+```

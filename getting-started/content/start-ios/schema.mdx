@@ -1,0 +1,162 @@
+---
+title: '1. Define a data model'
+description: Define your data model and create a GraphQL API to interface with your data 
+---
+
+To build the photo album app the first thing we need to do is model our backend data. The GraphQL Transform library provides a simple to use abstraction that helps you quickly create a GraphQL API backed with a NoSQL database (Amazon DynamoDB) in the AWS cloud. In the steps below, we'll set up a GraphQL server that will enforce our schema's structure, and then we'll define the schema itself.
+
+
+## Set up GraphQL data model
+
+For this app, we have the following requirements:
+
+1. A photo album screen that shows a list of photos
+2. Ability to view details on a particular photo
+
+A photo album has a `Photo` and `Album` field. An `Album` can contain many `Photos`
+
+A schema is only useful if our data graph conforms to the schema's structure. Enforcing a schema's structure is one of the core features of **GraphQL Transform**. With the GraphQL Transform, you define your application’s data model using the GraphQL Schema Definition Language (SDL) and the library handles converting your SDL definition into a set of fully descriptive AWS CloudFormation templates that implement your data model.
+
+
+From the directory of your app, run `amplify add api` and respond to the prompts like this:
+
+```bash
+$ amplify add api 
+
+? Please select from one of the below mentioned services
+GraphQL
+
+? Provide API name:
+photoalbums
+
+? Choose an authorization type for the API
+API_KEY
+
+? Do you have an annotated GraphQL schema? 
+No
+
+? Do you want a guided schema creation? 
+Yes
+
+? What best describes your project: 
+One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)
+
+? Do you want to edit the schema now? 
+Yes
+
+Please manually edit the file created at /home/ec2-user/environment/photoalbums/amplify/backend/api/photoalbums/schema.graphql
+
+? Press enter to continue
+```
+
+This will open your default editor with an example schema. Replace the default schema with what is provided below:
+
+```js:title=amplify/backend/api/photoalbums/schema.graphql
+type Album @model{
+    id: ID!
+    name: String!
+    photos: [Photo] @connection(name: "AlbumPhotos")
+}
+
+type Photo @model{
+    id: ID!
+    album: Album @connection(name: "AlbumPhotos")
+}
+```
+
+Define what `@model` and `@connection` do.
+
+## Push backend to the cloud
+
+```bash
+amplify push
+```
+
+As you can see below, you can the resources you are creating in AWS inside the Amplify Console which you can get to anytime just by typing `amplify console` in your bash.
+
+![console](https://miro.medium.com/max/2656/1*7-H3RwNuGSUklmwsSWY30A.png)
+
+## Add the pod to your podfile
+
+Now that we have created the resource in the cloud, we need to install the Amplify API Plugin so we can take advantage of it in code. Add the following pod to your Podfile:
+
+```ruby
+pod 'AmplifyPlugins/AWSAPIPlugin'
+```
+Now install the dependencies via Cocoapods
+
+```bash
+pod install --repo-update
+```
+## Add the plugin to App Delegate 
+
+Now in your app delegate, let's add the AWS plugin  so that we can use the API category to make calls to our GraphQL Server that we just created. First add the import statements at the top of the file
+
+```swift
+import Amplify
+import AmplifyPlugins
+```
+Then add the following code to your AppDelegate’s `application:didFinishLaunchingWithOptions` method:
+
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    let apiPlugin = AWSAPIPlugin(modelRegistration: AmplifyModels())
+    do {
+        try Amplify.add(plugin: apiPlugin)
+        try Amplify.configure()
+        print("Amplify initialized")
+    } catch {
+        print("Failed to configure Amplify \(error)")
+    }
+    return true
+}
+```
+
+## Save data
+
+Here's how you would mutate data on iOS using the API plugin.  These are examples of how you would call API for Todo objects, we will need to adjust this code to fit our GraphQL Schema we created above.
+
+```swift
+    let todo = Todo(name: "MyTodo", description: "description") // Create an instance of the Model you want to mutate
+    _ = Amplify.API.mutate(of: todo, type: .create) { (event) in  // Call Mutate with the model with `create` mutation type. You can also `update` or `delete`
+        switch event {
+        case .completed(let result):
+            switch result {
+            case .success(let todo):
+                print("Successfully created todo: \(todo)")
+            case .failure(let error):
+                print("Got failed result with \(error.errorDescription)")
+            }
+        case .failed(let error):
+            print("Got failed event with error \(error)")
+        default:
+            print("Should never happen")
+        }
+    }
+```
+
+## Query data
+
+This is just an example of how to query data in Swift using the Amplify iOS libraries. We will walk you through how to do it in our own app a bit later on.
+
+```swift
+    _ = Amplify.API.query(from: Todo.self, byId: "9FCF5DD5-1D65-4A82-BE76-42CB438607A0") { (event) in
+        switch event {
+        case .completed(let result):
+            switch result {
+            case .success(let todo):
+                guard let todo = todo else {
+                    print("Could not find todo")
+                    return
+                }
+                print("Successfully retrieved todo: \(todo)")
+            case .failure(let error):
+                print("Got failed result with \(error.errorDescription)")
+            }
+        case .failed(let error):
+            print("Got failed event with error \(error)")
+        default:
+            print("Should never happen")
+        }
+    }
+```

@@ -1,0 +1,23 @@
+---
+title: Get URL
+description: Retrieve URL for a storage object
+---
+
+You can also retrieve a URL for the object in storage
+
+```swift
+func getURL() {
+  Amplify.Storage.getURL(key: "myKey") { (event) in
+      switch event {
+      case .completed(let data):
+          print("Completed: \(data)")
+      case .failed(let storageError):
+          print("Failed: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+      case .inProcess(let progress):
+          print("Progress: \(progress)")
+      default:
+          break
+      }
+  }
+}
+```

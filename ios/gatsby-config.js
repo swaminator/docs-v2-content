@@ -47,12 +47,13 @@ module.exports = {
         menuTitle: 'Amplify Framework',
         baseUrl: 'https://www.amplify.aws',
         twitterHandle: 'awsamplify',
+        githubRepo: 'swaminator/docs-v2-content',
         defaultVersion: 'default',
         navConfig,
         footerNavConfig,
         root: __dirname,
-        subtitle: 'Amplify JS',
-        description: 'How to use the Amplify Framework',
+        subtitle: 'Amplify iOS',
+        description: 'How to use the Amplify iOS',
         sidebarCategories: {
           null: ['index'],
           'Authentication': [
@@ -83,20 +84,23 @@ module.exports = {
             'api-gql/mutatedata',
             'api-gql/subscribedata',
             'api-gql/configauth',
-            'api-gql/offline',
-            'api-gql/synchronization',
-            'api-gql/customresolvers',
             'api-gql/graphqlserver',
             'api-gql/manualconfig'
           ],
           'REST API': [
-            'api-rest/start',
-            'api-rest/fetch',
-            'api-rest/update',
-            'api-rest/authz'
+            'api-rest/intro',
+            'api-rest/start'
           ],
           'Storage': [
-            'api/intro'
+            'storage/intro',
+            'storage/start',
+            'storage/upload',
+            'storage/download',
+            'storage/geturl',
+            'storage/list',
+            'storage/remove',
+            'storage/escapehatch',
+            'storage/configureaccess'
           ],
           'Datastore': [
             'datastore/intro',
@@ -104,15 +108,14 @@ module.exports = {
             'datastore/data-access',
             'datastore/sync',
             'datastore/relational',
-            'datastore/conflict',
+            'datastore/conflict'
           ],
           'Analytics': [
             'analytics/start',
             'analytics/record',
             'analytics/autotrack',
-            'analytics/streaming',
-            'analytics/storing',
-            'analytics/personalize',
+            'analytics/identifyuser',
+            'analytics/escapehatch'
           ],
           'Predictions': [
             'predictions/intro',
@@ -120,24 +123,11 @@ module.exports = {
             'predictions/text-speech',
             'predictions/transcribe',
             'predictions/translate',
-            'predictions/text-image',
-            'predictions/entity-image',
+            'predictions/identify-text',
+            'predictions/identify-entity',
             'predictions/label-image',
-            'predictions/analyze',
-            'predictions/sample',
-          ],
-          'Interactions': [
-            'interactions/start',
-            'interactions/chatbot',
-          ],
-          'Push Notifications': [
-            'notifications/start'
-          ],
-          'XR': [
-            'api/intro'
-          ],
-          'PubSub': [
-            'pubsub/start'
+            'predictions/interpret',
+            'predictions/escapehatch'
           ]
         }
       }

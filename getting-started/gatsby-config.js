@@ -35,34 +35,47 @@ const footerNavConfig = {
 	}
 };
 module.exports = {
-	plugins: [
-		{
-			resolve: "gatsby-theme-apollo-docs",
-			options: {
-				root: __dirname,
-				siteName: "Amplify Docs",
-				description: "Amplify Framework Docs",
-				menuTitle: "Amplify Framework",
-				baseUrl: "https://www.amplify.aws",
-				twitterHandle: "awsamplify",
-				defaultVersion: "default",
-				navConfig,
-				footerNavConfig,
-				root: __dirname,
-				subtitle: "Amplify 101",
-				description: "How to use the Amplify Framework",
-				sidebarCategories: {
-					null: ["index"],
-					"Get Started (Web)": [
-						"start/introduction",
-						"start/setup",
-						"start/auth",
-						"start/data-model",
-						"start/storage",
-						"start/hosting"
-					]
-				}
-			}
-		}
-	]
+  plugins: [
+    {
+      resolve: 'gatsby-theme-apollo-docs',
+      options: {
+        root: __dirname,
+        siteName: 'Amplify Docs',
+        description: "Amplify Framework Docs",
+        menuTitle: 'Amplify Framework',
+        baseUrl: 'https://www.amplify.aws',
+        twitterHandle: 'awsamplify',
+        defaultVersion: 'default',
+        navConfig,
+        footerNavConfig,
+        root: __dirname,
+        subtitle: 'Amplify 101',
+        description: 'How to use the Amplify Framework',
+        sidebarCategories: {
+          null: ['index'],
+          'Get Started (Web)': [
+            'start/introduction',
+            'start/schema',
+            'start/auth',
+            'start/authz',
+            'start/storage',
+            'start/hosting'
+          ],
+          'Get Started (React Native)': [
+            'start-rn/introduction',
+            'start-rn/api',
+            'start-rn/auth',
+            'start-rn/storage'
+          ],
+          'Get Started (iOS)': [
+            'start-ios/intro',
+            'start-ios/schema',
+            'start-ios/auth',
+            'start-ios/authZ',
+            'start-ios/storage'
+          ]
+        }
+      }
+    }
+  ]
 };

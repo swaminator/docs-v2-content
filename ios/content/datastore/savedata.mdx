@@ -1,0 +1,23 @@
+---
+title: Save data
+description: Save data using Amplify iOS DataStore
+---
+
+## Save Data
+
+To write any data to the DataStore you can pass an instance of a Model to `DataStore.save()` and it will be persisted in offline storage. At this point you can use it as an item in a normal data store such as querying, updating or deleting. If you choose to later connect to the cloud the item will be synchronized using GraphQL mutations and any other systems connected to the same backend can run queries or mutations on these items as well as observe them with GraphQL subscriptions.
+
+```swift
+Amplify.DataStore.save(
+    Post(title: "My First Post",
+         rating: 10,
+         status: "active")
+){
+    switch $0 {
+    case .success:
+        print("Added post")
+    case .failure(let err):
+        print("Error adding post - \(err.localizedDescription)")
+    }
+}
+```

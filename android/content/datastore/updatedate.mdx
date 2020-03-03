@@ -1,0 +1,36 @@
+---
+title: Update data
+description: Update data using Amplify iOS DataStore
+---
+
+Models in DataStore are immutable. To update a record you must query it to get a reference to the instance before updating it with `DataStore.save()`:
+
+```swift
+Amplify.DataStore.query(Post.self, byId: "123") {
+    switch $0 {
+    case .success(let post):
+        print("Updating the post \(String(describing: post))")
+        if var updatedPost = post {
+            updatedPost.status = "inactive"
+            Amplify.DataStore.save(updatedPost){ res in
+                switch res {
+                case .success:
+                    print("Post updated!")
+                case .failure(let err):
+                    print("Failed to update post - \(err.localizedDescription)")
+                }
+            }
+        }
+    case .failure(let err):
+        print("Post not found - \(err.localizedDescription)")
+    }
+}
+```
+
+You can also apply conditions to update and delete operations. The condition will be applied locally and if you have enabled synchronization with the cloud it will be placed in a network mutation queue. The GraphQL mutation will then include this condition and be evaluated against the existing record in DynamoDB. If the condition holds the item in the cloud is updated and synchronized across devices. If the check fails then the item is not updated and the source of truth from the cloud will be applied to the local DataStore. For instance if you wanted to update if the `rating` was greater than 3:
+
+```swift
+//TODO
+```
+
+Conditional updates can only be applied to single items and not lists. If you wish to update a list of items you can loop over them and apply conditions one at a time.

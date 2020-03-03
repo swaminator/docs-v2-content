@@ -1,125 +1,80 @@
 ---
-title: Setup REST API
+title: Get Started
 description: 
 ---
 
-The API category provides a solution for making HTTP requests to REST and GraphQL endpoints. For building GraphQL APIs please visit the [GraphQL guide](api-gql/intro)
+## Set Up Your Backend
 
-The REST API category can be used for creating signed requests against Amazon API Gateway when the API Gateway Authorization is set to `AWS_IAM`. 
+In a terminal window, navigate to your project folder (the folder that contains your app `.Xcodeproj` file), and add the SDK to your app.
 
-> Ensure you have [installed and configured the Amplify CLI and library](/js/start).
-
-## Create REST API
-
-Run the following command in your project's root folder:
-
-```bash
+```terminal
+$ cd ./YOUR_PROJECT_FOLDER
 $ amplify add api
 ```
 
-Select `REST` as the service type.
+When prompted select the following options:
 
-```bash
-? Please select from one of the below mentioned services
-  GraphQL
-❯ REST
+```terminal
+$ > REST
+$ > Create a new Lambda function
+$ > Serverless express function
+$ > Restrict API access? Yes
+$ > Who should have access? Authenticated and Guest users
 ```
 
-The CLI will prompt several options to create your resources. With the provided options you can create:
-- REST endpoints that triggers Lambda functions
-- REST endpoints which enables CRUD operations on an Amazon DynamoDB table
+When configuration of your API is complete, the CLI displays a message confirming that you have configured local CLI metadata for this category. You can confirm this by running `amplify status`. Finally deploy your changes to the cloud:
 
-During setup you can use existing Lambda functions and DynamoDB tables or create new ones by following the CLI prompts. After your resources have been created update your backend with the `push` command:
-
-```bash
+```terminal
 $ amplify push
 ```
 
-A configuration file called `aws-exports.js` will be copied to your configured source directory, for example `./src`.
+## Connect to Your Backend
 
+Add `AWSAPIGateway` to your Podfile:
 
-## Import existing REST API
+```ruby
 
-For manual configuration you need to provide your AWS Resource configuration and optionally configure authentication.
+	target :'YOUR-APP-NAME' do
+	  use_frameworks!
 
-```javascript
-import Amplify, { API } from 'aws-amplify';
+	    pod 'Amplify', :path => '~/aws-amplify/amplify-ios'
+        pod 'AWSPluginsCore', :path => '~/aws-amplify/amplify-ios'
+        pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/aws-amplify/amplify-ios'
+	end
+```
 
-Amplify.configure({
-    // OPTIONAL - if your API requires authentication 
-    Auth: {
-        // REQUIRED - Amazon Cognito Identity Pool ID
-        identityPoolId: 'XX-XXXX-X:XXXXXXXX-XXXX-1234-abcd-1234567890ab',
-        // REQUIRED - Amazon Cognito Region
-        region: 'XX-XXXX-X', 
-        // OPTIONAL - Amazon Cognito User Pool ID
-        userPoolId: 'XX-XXXX-X_abcd1234', 
-        // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-        userPoolWebClientId: 'a1b2c3d4e5f6g7h8i9j0k1l2m3',
-    },
-    API: {
-        endpoints: [
-            {
-                name: "MyAPIGatewayAPI",
-                endpoint: "https://1234567890-abcdefgh.amazonaws.com"
-            },
-            {
-                name: "MyCustomCloudFrontApi",
-                endpoint: "https://api.my-custom-cloudfront-domain.com",
+Run `pod install --repo-update` and then add `awsconfiguration.json` and `amplifyconfiguration.json` file to your project **(File->Add Files to ..->Add)** and then build your project, ensuring there are no issues.
 
+Add the following code to your app:
+
+```swift                                
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Override point for customization after application launch.
+        AWSMobileClient.default().initialize { (userState, error) in
+            guard error == nil else {
+                print("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
+                return
             }
-        ]
-    }
-});
-```
+            guard let userState = userState else {
+                print("userState is unexpectedly empty initializing AWSMobileClient")
+                return
+            }
 
-### AWS Regional Endpoints
-
-You can utilize regional endpoints by passing in the *service* and *region* information to the configuration. See [AWS Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html). The example below defines a [Lambda invocation](https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html) in the `us-east-1` region:
-
-```javascript
-API: {
-    endpoints: [
-        {
-            name: "MyCustomLambda",
-            endpoint: "https://lambda.us-east-1.amazonaws.com/2015-03-31/functions/yourFuncName/invocations",
-            service: "lambda",
-            region: "us-east-1"
+            print("AWSMobileClient initialized, userstate: \(userState)")
         }
-    ]
-}
+
+        // Amplify section
+        let apiPlugin = AWSAPIPlugin()
+        try! Amplify.add(plugin: apiPlugin)
+        try! Amplify.configure()
+        print("Amplify initialized")
+
+        return true
+    }
 ```
 
-Note **THIS IS NOT RECOMMENDED ARCHITECTURE** and we highly recommend you leverage AWS AppSync or API Gateway as the endpoint to invoke your Lambda functions. 
+## IAM authorization
 
- **Configuring Amazon Cognito Regional Endpoints** To call regional service endpoints, your Amazon Cognito role needs to be configured with appropriate access for the related service. See [AWS Cognito Documentation](https://docs.aws.amazon.com/cognito/latest/developerguide/iam-roles.html) for more details.
- {: .callout .callout--warning}
+To invoke an API Gateway endpoint from your application, For AWS IAM authorization use the `AWSMobileClient` as outlined in the authentication section.
 
-## Configure frontend
-
-Import and load the configuration file in your app. It's recommended you add the Amplify configuration step to your app's root entry point. For example `App.js` in React or `main.ts` in Angular.
-
-```javascript
-import Amplify, { API } from 'aws-amplify';
-import awsconfig from './aws-exports';
-
-Amplify.configure(awsconfig);
-```
-
-## Modular imports
-
-If you only need to use API, you can run: `npm install @aws-amplify/api` which will only install the API module.
-Note: if you're using Cognito Federated Identity Pool to get AWS credentials, please also install `@aws-amplify/auth`.
-Note: if you're using Graphql, please also install `@aws-amplify/pubsub`
-
-Then in your code, you can import the Api module by:
-
-```javascript
-import API, { graphqlOperation } from '@aws-amplify/api';
-
-API.configure();
-```
-
-## API Reference   
-
-For the complete API documentation for API module, visit our [API Reference](https://aws-amplify.github.io/amplify-js/api/classes/apiclass.html).
+**Update this to have authorization mode included here rather than link**

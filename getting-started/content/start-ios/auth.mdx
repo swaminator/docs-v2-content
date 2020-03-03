@@ -1,0 +1,125 @@
+---
+title: '2. Add Auth'
+description: Add Authentication to your app
+---
+
+Now that we have a GraphQL Schema and a way to interact with our schema in code, let's add authentication and authorization to our app.
+
+## Set up Authentication Backend
+
+First thing we need to do is set up our authentication resource in the cloud. We can easily do so by again jumping to our terminal and running the following command and walking through the questions with the answers below:
+
+```bash
+amplify add auth
+
+? Do you want to use the default authentication and security configuration? Default configuration
+? How do you want users to be able to sign in? Username
+? Do you want to configure advanced settings?  No, I am done.
+```
+
+Now to deploy the service, run push command as we did before when we created our Managed GraphQL Server:
+
+```bash
+amplify push
+```
+
+## Initialize AWS Mobile Client
+
+The true iOS Auth category of Amplify is still in progress and being built so for the meantime, we will use the `AWSMobileClient`. 
+The `AWSMobileClient` provides client APIs and building blocks for developers who want to create user authentication experiences. 
+This includes declarative methods for performing authentication actions, a simple “drop-in auth” UI for performing common tasks, automatic token and credentials management, and state tracking with notifications for performing workflows in your application when users have authenticated.
+
+### Amazon Cognito
+
+It's important to understand a bit about the service behind the `AWSMobileClient`, Amazon Cognito. There are two main services inside Amazon Cognito: User Pools and Identity Pools.
+Amazon Cognito User Pools is a full-featured user directory service to handle user registration, storage, **authentication**, and account recovery. Cognito User Pools returns JWT tokens to your app and does not provide temporary AWS credentials for calling authorized AWS Services. 
+Amazon Cognito Identity Pools on the other hand, is a way to **authorize** your users to use AWS services. With an identity pool, you can obtain temporary AWS credentials with permissions you define to access other AWS services directly or to access resources through Amazon API Gateway.
+
+When working together, Cognito User Pools acts as a source of user identities (identity provider) for the Cognito Identity Pools. Other sources can be OpenID, Facebook, Google, etc. AWS Amplify uses User Pools to store your user information and handle authorization, and it leverages Identity Pools to manage user access to AWS Resources, for example allowing a user to upload a file to an S3 bucket.
+
+### Update Podfile
+
+First we need to make sure we add the correct pods to be able to take advantage of `AWSMobileClient` so update your Podfile and add the following pods:
+
+```ruby
+  pod 'AWSMobileClient', '~> 2.12.1'      # Required dependency
+  pod 'AWSAuthUI', '~> 2.12.1'            # Optional dependency required to use drop-in UI
+  pod 'AWSUserPoolsSignIn', '~> 2.12.1'   # Optional dependency required to use drop-in UI
+```
+
+Now run:
+
+```bash
+pod install --repo-update
+```
+
+### Update Initial View Controller
+
+Now open your Initial View Controller (which should be a navigation controller or embedded by a navigation controller) and add the following import statement at the top:
+
+```swift
+import AWSMobileClient
+```
+ and then drop the below code in your `viewDidLoad` method:
+
+ ```swift
+     override func viewDidLoad() {
+        super.viewDidLoad()
+        AWSMobileClient.default().initialize { (userState, error) in
+            if let userState = userState {
+                print("UserState: \(userState.rawValue)")
+            } else if let error = error {
+                print("error: \(error.localizedDescription)")
+            }
+        }
+    }
+ ```
+
+Now build and run your program to see the initialized client in the Xcode console. Since you haven’t logged in yet it will print a state of `signedOut`. Let's add the drop in UI here to get us all the views we need for authentication: log in, create your account, forgot password, etc.
+Let's update the above code to now pop the drop-in UI when we detect that the UserState is `signedOut`:
+
+```swift
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        AWSMobileClient.default().initialize { (userState, error) in
+            if let userState = userState {
+                switch(userState){
+                case .signedIn:
+                    //lead your user to the authenticated screen of our app
+                    break
+                case .signedOut:
+                    //if signed out, pop that drop in UI
+                    AWSMobileClient.default().showSignIn(navigationController: self.navigationController!, { (userState, error) in
+                            if(error == nil){       //Successful signin
+                                //redirect to the authenticated view controller
+                            }
+                        })
+                default:
+                    AWSMobileClient.default().signOut()
+                }
+                
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+```
+### Customization of Drop-In UI
+
+Currently, you can change the following properties of the drop-in UI we put in our code in the step above:
+
+- Logo: Any image file of png or jpg
+- Background Color: Any iOS UIColor
+
+```swift
+AWSMobileClient.default()
+    .showSignIn(navigationController: self.navigationController!,
+                     signInUIOptions: SignInUIOptions(
+                           canCancel: false,
+                           logoImage: UIImage(named: "MyCustomLogo"),
+                            backgroundColor: UIColor.black)) { (result, err) in
+                            //handle results and errors               
+}
+```
+
+You can also dismiss the sign in process by setting the canCancel property.

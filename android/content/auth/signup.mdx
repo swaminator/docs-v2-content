@@ -1,0 +1,65 @@
+---
+title: User sign-up
+description:
+---
+
+## Basic sign-up
+
+Create a new user in the Amazon Cognito UserPool by passing the new user's email address, password, and other attributes to `Auth.signUp`.
+
+```javascript
+import { Auth } from 'aws-amplify';
+
+Auth.signUp({
+    username,
+    password,
+    attributes: {
+        email,          // optional
+        phone_number,   // optional - E.164 number convention
+        // other custom attributes 
+    },
+    validationData: []  //optional
+    })
+    .then(data => console.log(data))
+    .catch(err => console.log(err));
+```
+
+The `Auth.signUp` promise returns a data object of type [`ISignUpResult`](https://github.com/aws-amplify/amplify-js/blob/4644b4322ee260165dd756ca9faeb235445000e3/packages/amazon-cognito-identity-js/index.d.ts#L136-L139) with a [`CognitoUser`](https://github.com/aws-amplify/amplify-js/blob/4644b4322ee260165dd756ca9faeb235445000e3/packages/amazon-cognito-identity-js/index.d.ts#L48). 
+
+```js
+{
+    user: CognitoUser;
+    userConfirmed: boolean;
+    userSub: string;
+}
+```
+
+### Forcing Email Uniqueness in Cognito User Pools
+
+When your Cognito User Pool sign-in options are set to "*Username*", and "*Also allow sign in with verified email address*", the *signUp()* method creates a new user account every time it's called, without validating email uniqueness. In this case you will end up having multiple user pool identities and all previously created accounts will have their *email_verified* attribute changed to *false*. 
+
+To enforce Cognito User Pool signups with a unique email, you need to change your User Pool's *Attributes* setting in [Amazon Cognito console](https://console.aws.amazon.com/cognito) as the following:
+
+![cup](https://aws-amplify.github.io/docs/js/images/cognito_user_pool_settings.png)
+
+## Confirm sign up
+
+If you enabled multi-factor auth, confirm the sign-up after retrieving a confirmation code from the user.
+
+```js
+Auth.confirmSignUp(username, code, {
+    // Optional. Force user confirmation irrespective of existing alias. By default set to True.
+    forceAliasCreation: true    
+}).then(data => console.log(data))
+  .catch(err => console.log(err));
+```
+
+## Re-send confirmation code
+
+```js
+Auth.resendSignUp(username).then(() => {
+    console.log('code resent successfully');
+}).catch(e => {
+    console.log(e);
+});
+```

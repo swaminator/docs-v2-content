@@ -1,0 +1,55 @@
+---
+title: '3. Set up Authorization Rules'
+description: Authorization rules for your GraphQL API
+---
+
+## Authorization
+
+Authorization is required for applications to interact with your GraphQL API. There are a few ways to do this with the AWS API Plugin:
+- API Keys
+    - API Keys are best used for public APIs (or parts of your schema which you wish to be public) or prototyping, and you must specify the expiration time before deploying. 
+- IAM Authorization
+    - IAM authorization uses Signature Version 4 to make request with policies attached to Roles. 
+- OIDC tokens provided by Amazon Cognito User Pools or 3rd party OpenID Connect providers.
+    - OIDC tokens provided by Amazon Cognito User Pools or 3rd party OpenID Connect providers can also be used for authorization, and simply enabling this provides a simple access control requiring users to authenticate to be granted top level access to API actions. 
+
+You can set finer grained access controls using @auth on your schema which leverages authorization metadata provided as part of these tokens or set on the database items themselves.
+
+Your authorization mode choice is inferred from the `amplifyconfiguration.json` file when you call `Amplify.configure()`.
+
+When we set up auth in the previous section, it should have automatically set this up for us but just in case it didn't you can check your `amplifyconfiguration.json` and `awsconfiguration.json` files to make sure they look like the ones below:
+
+
+```json:title=awsconfiguration.json
+{
+  "CognitoUserPool": {
+        "Default": {
+            "PoolId": "POOL-ID",
+            "AppClientId": "APP-CLIENT-ID",
+            "AppClientSecret": "APP-CLIENT-SECRET",
+            "Region": "us-east-1"
+        }
+    },
+  "AppSync": {
+        "Default": {
+            "ApiUrl": "YOUR-GRAPHQL-ENDPOINT",
+            "Region": "us-east-1",
+            "AuthMode": "AMAZON_COGNITO_USER_POOLS"
+        }
+   }
+}
+```
+
+```json:title=amplifyconfiguration.json
+{
+    ...
+    "awsAPIPlugin": {
+        "<YOUR-GRAPHQLENDPOINT-NAME": {
+            "endpointType": "GraphQL",
+            "endpoint": "YOUR-GRAPHQL-ENDPOINT",
+            "region": "us-west-2",
+            "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+        }
+    }
+}
+```

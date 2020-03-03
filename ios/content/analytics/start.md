@@ -3,199 +3,124 @@ title: Setup analytics
 description: 
 ---
 
-The Analytics category enables you to collect analytics data for your app. The Analytics category comes with built-in support for [Amazon Pinpoint](#using-amazon-pinpoint) and [Amazon Kinesis](#using-amazon-kinesis).
+The Analytics category enables you to collect analytics data for your application. It comes with built-in support for [Amazon Pinpoint](#using-amazon-pinpoint), but its extensible interface allows it to be extended to target any cloud provider's backend
 
-> Prerequisite:</b> [Install and configure the Amplify CLI](..)
+## Set up your backend
 
-## Set up analytics backend
+**Prerequisites:**
+* An iOS project targeting at least iOS 11.0.
+* Install and configure the Amplify CLI
 
-Run the following command in your project's root folder:
-
-```bash
-$ amplify add analytics
+```terminal
+$ npm install -g @aws-amplify/cli
+$ amplify configure
 ```
 
-The CLI will prompt configuration options for the Analytics category such as Amazon Pinpoint resource name and analytics event settings.
+**Steps**
 
-> The Analytics category utilizes the Authentication category behind the scenes to authorize your app to send analytics events.}
+Go to your project directory and run the following commands to get a fully functioning backend with the Analytics category:
 
-The `add` command automatically creates a backend configuration locally. To update your backend run:
 
-```bash
+Run `amplify init` command as shown:
+
+```terminal
+$ amplify init
+? Enter a name for the project AmplifyAnalytics
+? Enter a name for the environment dev
+? Choose your default editor: Visual Studio Code
+? Choose the type of app that you're building ios
+? Do you want to use an AWS profile? Yes
+? Please choose the profile you want to use default
+```
+
+
+Add analytics using the command `amplify add analytics`. Here is an example:
+
+```perl
+? Provide your pinpoint resource name: `pinpointResourceName`
+Adding analytics would add the Auth category to the project if not already added.
+? Apps need authorization to send analytics events. Do you want to allow guests and unauthenticated users to send analytics events? (we recommend you allow this when getting 
+started) `Yes`
+```
+    
+Push your changes to the cloud using the push command.
+```terminal
 $ amplify push
 ```
+    
+When your backend is successfully updated, there should be two newly created files: `amplifyconfiguration.json` and `awsconfiguration.json` in your project folder.
 
-A configuration file called `aws-exports.js` will be copied to your configured source directory, for example `./src`. The CLI will also print the URL for Amazon Pinpoint console to track your app events.  
+Optional: Run `amplify console analytics` to open the AWS Pinpoint console in a web browser to view your cloud resources.
 
-> If your Analytics resources were created with Amplify CLI version 1.6.4 and below, you will need to manually update your project to avoid Node.js runtime issues with AWS Lambda. [Read more]({%if jekyll.environment == 'production'%}{{site.amplify.docs_baseurl}}{%endif%}/cli/lambda-node-version-update)
+## Install Amplify libraries
 
-## Set up existing analytics backend
+If this is a new project, run `pod init` to create the `Podfile` to use CocoaPods to manage your dependencies. Add the following to the `Podfile`
 
-The manual setup enables you to use your existing Amazon Pinpoint resource in your app.
+```ruby
+    target :'YOUR-APP-NAME' do
+        use_frameworks!
+        pod 'AmplifyPlugins/AWSPinpointAnalyticsPlugin'
+        pod 'AWSMobileClient', '~> 2.12.0'
+    end
+```
 
-```javascript
-import Amplify from 'aws-amplify';
+Close out of the existing Xcode project if you have it open.
 
-Amplify.configure({
-    // To get the AWS Credentials, you need to configure 
-    // the Auth module with your Cognito Federated Identity Pool
-    Auth: {
-        identityPoolId: 'us-east-1:xxx-xxx-xxx-xxx-xxx',
-        region: 'us-east-1'
-    },
-    Analytics: {
-        // OPTIONAL - disable Analytics if true
-        disabled: false,
-        // OPTIONAL - Allow recording session events. Default is true.
-        autoSessionRecord: true,
+Install the dependencies via CocoaPods
+```ruby
+$ pod install --repo-update
+```
 
-        AWSPinpoint: {
-            // OPTIONAL -  Amazon Pinpoint App Client ID
-            appId: 'XXXXXXXXXXabcdefghij1234567890ab',
-            // OPTIONAL -  Amazon service region
-            region: 'XX-XXXX-X',
-            // OPTIONAL -  Customized endpoint
-            endpointId: 'XXXXXXXXXXXX',
-            // OPTIONAL - Default Endpoint Information
-            endpoint: {
-                address: 'xxxxxxx', // The unique identifier for the recipient. For example, an address could be a device token, email address, or mobile phone number.
-                attributes: {
-                    // Custom attributes that your app reports to Amazon Pinpoint. You can use these attributes as selection criteria when you create a segment.
-                    hobbies: ['piano', 'hiking'],
-                },
-                channelType: 'APNS', // The channel type. Valid values: APNS, GCM
-                demographic: {
-                    appVersion: 'xxxxxxx', // The version of the application associated with the endpoint.
-                    locale: 'xxxxxx', // The endpoint locale in the following format: The ISO 639-1 alpha-2 code, followed by an underscore, followed by an ISO 3166-1 alpha-2 value
-                    make: 'xxxxxx', // The manufacturer of the endpoint device, such as Apple or Samsung.
-                    model: 'xxxxxx', // The model name or number of the endpoint device, such as iPhone.
-                    modelVersion: 'xxxxxx', // The model version of the endpoint device.
-                    platform: 'xxxxxx', // The platform of the endpoint device, such as iOS or Android.
-                    platformVersion: 'xxxxxx', // The platform version of the endpoint device.
-                    timezone: 'xxxxxx' // The timezone of the endpoint. Specified as a tz database value, such as Americas/Los_Angeles.
-                },
-                location: {
-                    city: 'xxxxxx', // The city where the endpoint is located.
-                    country: 'xxxxxx', // The two-letter code for the country or region of the endpoint. Specified as an ISO 3166-1 alpha-2 code, such as "US" for the United States.
-                    latitude: 0, // The latitude of the endpoint location, rounded to one decimal place.
-                    longitude: 0, // The longitude of the endpoint location, rounded to one decimal place.
-                    postalCode: 'xxxxxx', // The postal code or zip code of the endpoint.
-                    region: 'xxxxxx' // The region of the endpoint location. For example, in the United States, this corresponds to a state.
-                },
-                metrics: {
-                    // Custom metrics that your app reports to Amazon Pinpoint.
-                },
-                /** Indicates whether a user has opted out of receiving messages with one of the following values:
-                 * ALL - User has opted out of all messages.
-                 * NONE - Users has not opted out and receives all messages.
-                 */
-                optOut: 'ALL',
-                // Customized userId
-                userId: 'XXXXXXXXXXXX',
-                // User attributes
-                userAttributes: {
-                    interests: ['football', 'basketball', 'AWS']
-                    // ...
-                }
-            },
+Open the `.xcworkspace` file created by CocoaPods
+```ruby
+$ open <YOURAPP>.xcworkspace
+```
 
-            // Buffer settings used for reporting analytics events.
-            // OPTIONAL - The buffer size for events in number of items.
-            bufferSize: 1000,
+## Add Configuration Files
 
-            // OPTIONAL - The interval in milliseconds to perform a buffer check and flush if necessary.
-            flushInterval: 5000, // 5s 
+1. Open the finder of your project and drag the `amplifyconfiguration.json` and `awsconfiguration.json` over to the Xcode window, under the workspace. 
+2. Enable `Copy items if needed` if not already enabled
+3. For "Added folders", have `Create groups` selected. 
+4. For "Add to targets", make sure the app target is checked off.
+5. Build (`CMD+B`) the app 
 
-            // OPTIONAL - The number of events to be deleted from the buffer when flushed.
-            flushSize: 100,
+## Initialize Amplify
 
-            // OPTIONAL - The limit for failed recording retries.
-            resendLimit: 5
+Initialize `AWSMobileClient`, `Amplify`, and `AWSPinpointAnalyticsPlugin`.
+
+Add the following imports to the top of your `AppDelegate.swift` file:
+
+```swift
+import Amplify
+import AWSMobileClient
+import AmplifyPlugins
+```
+
+Add the following code to your AppDelegate's `application:didFinishLaunchingWithOptions` method
+
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+// Override point for customization after application launch.
+    AWSMobileClient.default().initialize { (userState, error) in
+        guard error == nil else {
+            print("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
+            return
         }
+        print("AWSMobileClient initialized, userstate: \(userState)")
     }
-});
-```
 
-## Configure Your App
-
-Import and load the configuration file in your app. It's recommended you add the Amplify configuration step to your app's root entry point. For example `App.js` in React or `main.ts` in Angular.
-
-```javascript
-import Amplify, { Analytics } from 'aws-amplify';
-import awsconfig from './aws-exports';
-
-Amplify.configure(awsconfig);
-```
-
-User session data is automatically collected unless you disabled analytics. To see the results visit the [Amazon Pinpoint console](https://console.aws.amazon.com/pinpoint/home/).
-
-
-## Using Modular Imports
-
-You can import only specific categories into your app if you are only using specific features, analytics for example: `npm install @aws-amplify/analytics` which will only install the Analytics category. For working with AWS services you will also need to install and configure `@aws-amplify/auth`.
-
-Import only Analytics:
-
-```javascript
-import Analytics from '@aws-amplify/analytics';
-
-Analytics.configure();
-
+    let analyticsPlugin = AWSPinpointAnalyticsPlugin()
+    do {
+        try Amplify.add(plugin: analyticsPlugin)
+        try Amplify.configure()
+        print("Amplify configured with analytics plugin")
+    } catch {
+        print("Failed to initialize Amplify with \(error)")
+    }
+    return true
+}
 ```
 
 ## API Reference
 
-For a complete API reference visit the [API Reference](https://aws-amplify.github.io/amplify-js/api/classes/analyticsclass.html)
-{: .callout .callout--info}
-
-## Using a Custom Plugin
-
-You can create your custom pluggable for Analytics. This may be helpful if you want to integrate your app with a custom analytics backend.
-
-To create a plugin implement the `AnalyticsProvider` interface:
-
-```typescript
-import { Analytics, AnalyticsProvider } from 'aws-amplify';
-
-export default class MyAnalyticsProvider implements AnalyticsProvider {
-    // category and provider name
-    static category = 'Analytics';
-    static providerName = 'MyAnalytics';
-
-    // you need to implement these four methods
-    // configure your provider
-    configure(config: object): object;
-
-    // record events and returns true if succeeds
-    record(params: object): Promise<boolean>;
-
-    // return 'Analytics';
-    getCategory(): string;
-
-    // return the name of you provider
-    getProviderName(): string;
-}
-```
-
-You can now register your pluggable:
-
-```javascript
-// add the plugin
-Analytics.addPluggable(new MyAnalyticsProvider());
-
-// get the plugin
-Analytics.getPluggable(MyAnalyticsProvider.providerName);
-
-// remove the plugin
-Analytics.removePluggable(MyAnalyticsProvider.providerName);
-
-// send configuration into Amplify
-Analytics.configure({
-    MyAnalyticsProvider: { 
-        // My Analytics provider configuration 
-    }
-});
-
-```
-
-The default provider (Amazon Pinpoint) is in use when you call `Analytics.record()` unless you specify a different provider: `Analytics.record({..},'MyAnalyticsProvider')`. 
+For a complete API reference visit the API Reference

@@ -1,0 +1,75 @@
+---
+title: '4. Store files'
+description: Storage for uploading and downloading photos
+---
+
+## Add storage to your backend
+
+```
+amplify add storage
+? Who should have access: Auth and guest users
+
+
+? What kind of access do you want for Authenticated users? 
+◉ create/update
+◉ read
+◉ delete
+
+
+? What kind of access do you want for Guest users? 
+◯ create/update
+◉ read
+◯ delete
+
+
+? Do you want to add a Lambda Trigger for your S3 Bucket? No
+```
+
+## Update your data model
+
+```js:amplify/backend/api/photoalbums/schema.graphql
+
+type Album @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    name: String!
+    photos: [Photo] @connection(name: "AlbumPhotos")
+}
+
+type Photo @model @auth(rules: [{allow: owner}]) {
+    id: ID!
+    album: Album @connection(name: "AlbumPhotos")
+    bucket: String!
+    fullsize: PhotoS3Info!
+    thumbnail: PhotoS3Info!
+}
+
+type PhotoS3Info {
+    key: String!
+    width: Int!
+    height: Int!
+}
+```
+
+```
+amplify push
+```
+
+## Render frontend
+
+Code to create a barebones frontend
+
+<MultiCodeBlock>
+
+```react
+code here
+```
+
+```ios
+code here
+```
+
+```android
+code here
+```
+</MultiCodeBlock>
+
